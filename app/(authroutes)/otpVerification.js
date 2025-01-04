@@ -5,15 +5,20 @@ import CatHeadOtpInput from '../../components/ui/CatHeadOtpInput';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import ThemedButton from '../../components/ThemedButton';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 
 const OtpVerification = ({ navigation }) => {
+    const option = useLocalSearchParams().option;
+
     const [otp, setOtp] = useState('');
 
     const handleOtpComplete = (otp) => {
         console.log("Complete OTP:", otp);
       };
 
+      const gotoHome =()=>{
+        router.replace('(tabs)');
+      }
 
     return (
         <ThemedView style={styles.container}>
@@ -34,7 +39,13 @@ const OtpVerification = ({ navigation }) => {
                  <ThemedButton
                     title={`Didn't receive code?`}
                     theme='secondary'
-                    href={{ pathname: '/registrationPage', params: { option: 'Sign Up' } }}
+                    onPress={() => {
+                        if (option === 'phonenumber') {
+                          gotoHome();
+                        } else {
+                          router.push({ pathname: '/registrationPage', params: { option: 'Sign Up' } });
+                        }
+                      }}
                 />
             </View>
         </ThemedView>

@@ -5,6 +5,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import ThemedButton from '../../components/ThemedButton';
 import { router } from 'expo-router';
+import ThemedInput from '../../components/ThemedInput ';
 
 const LoginWithPhonenumber = ({ navigation }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -14,7 +15,7 @@ const LoginWithPhonenumber = ({ navigation }) => {
         // Proceed to OTP verification
         router.push({
             pathname: '/otpVerification',
-            params: { phoneNumber },
+            params: { phoneNumber, option: 'phonenumber' },
         });
     };
 
@@ -37,21 +38,24 @@ const LoginWithPhonenumber = ({ navigation }) => {
             </ThemedText>
             <ThemedText style={styles.subtitle}>Complete below to continue</ThemedText>
           
-            <TextInput
-                style={styles.input}
-                placeholder="Phone Number"
-                placeholderTextColor="#AAB3BB"
-                keyboardType="phone-pad"
+           <ThemedInput
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
+                placeholder="Phone Number"
+                required
+                errorText="Phone is mandatory!"
             />
 
-             <ThemedText style={styles.subtext}  onPress={handleAccountRecovery}>Don’t have access to your  <Text style={styles.spanText}>phone number?</Text> </ThemedText>
-            <ThemedButton
-                title="Send SMS Code"
-                onPress={handleSendOtp}
-                style={styles.button}
-            />
+             <View style={styles.buttonContainer}>
+                <ThemedText style={styles.subtext}  onPress={handleAccountRecovery}>Don’t have access to your  <Text style={styles.spanText}>phone number?</Text> </ThemedText>
+                <ThemedButton
+                    title="Send SMS Code"
+                    onPress={handleSendOtp}
+                    style={styles.button}
+                />
+             </View>
+
+            
         </ThemedView>
     );
 };
@@ -80,45 +84,31 @@ const styles = StyleSheet.create({
     subtext: {
         fontSize: 16,
         color: 'rgba(151, 156, 158, 1)',
-        marginBottom: 40,
-       alignSelf: 'center',
-        maxWidth: 300,
+        marginBottom: 10,
         textAlign: 'center',
-        position: 'absolute',
-        bottom: 40, // Distance from the bottom
-        left: 16,
-        right: 16,
-        alignSelf: 'center',
     },
     title: {
         fontSize: 40,
         fontWeight: '800',
-        // marginBottom: 10,
-        marginLeft: 10,
     },
     subtitle: {
-        fontSize: 20,
-        color: '#FFFFFF',
-        marginLeft: 10,
+        fontSize: 18,
+        marginBottom: 60,
 
     },
-    input: {
-        borderColor: '#ffffff',
-        borderWidth: 1,
-        borderRadius: 8,
-        padding: 10,
-        fontSize: 16,
-        marginBottom: 20,
-        color: '#ffffff',
-        marginTop: 50
-    },
-    button: {
+    buttonContainer:{
         position: 'absolute',
-        bottom: 20, // Distance from the bottom
-        left: 16,
-        right: 16,
-        alignSelf: 'center',
+        bottom: 50,
+        left: 0,
+        right: 0,
     },
+    // button: {
+    //     position: 'absolute',
+    //     bottom: 20, // Distance from the bottom
+    //     left: 16,
+    //     right: 16,
+    //     alignSelf: 'center',
+    // },
     welcomeText:{
         color: '#B976FF',
     }

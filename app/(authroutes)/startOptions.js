@@ -15,7 +15,7 @@ const StartOptions = ({ navigation }) => {
             <View style={styles.buttonContainer}>
                 <ThemedButton
                     title={option === 'Sign Up' ? `${option}` : `${option} with Phone`}
-                    href={{ pathname: '/signUp', params: { option } }}
+                    href={{ pathname: option === 'Sign Up' ? '/signUp' : '/loginWithPhonenumber', params: { option } }}
                     // href={{ pathname: '/signUp', params: { option } }}
                 />
                 <ThemedButton
