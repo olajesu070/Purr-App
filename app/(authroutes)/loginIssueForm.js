@@ -6,21 +6,14 @@ import { ThemedText } from '@/components/ThemedText';
 import ThemedButton from '../../components/ThemedButton';
 import { router } from 'expo-router';
 
-const AccountRecovery = ({ navigation }) => {
+const LoginIssueForm = ({ navigation }) => {
     const [email, setEmail] = useState('');
+    const [subject, setSubject] = useState('');
+    const [description, setDescription] = useState('');
 
-    const handleSendRecoveryEmail = () => {
-        console.log("email address:", email);
-        // Proceed to OTP verification
+    const handleShowFormSubmittedSuccess = () => {
         router.push({
-            pathname: '/',
-            params: { email },
-        });
-    };
-
-    const handleIssueFormPage = () => {
-        router.push({
-            pathname: '/loginIssueForm',
+            pathname: '/loginIssueFormSuccess',
         });
     };
 
@@ -32,11 +25,11 @@ const AccountRecovery = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <ThemedText style={styles.title}>
-            Having&nbsp;
+                Having&nbsp;
                 <Text style={styles.welcomeText}>Trouble?</Text>
             </ThemedText>
             <ThemedText style={styles.subtitle}>Complete below to continue</ThemedText>
-          
+
             <TextInput
                 style={styles.input}
                 placeholder="Email Address"
@@ -46,10 +39,31 @@ const AccountRecovery = ({ navigation }) => {
                 onChangeText={setEmail}
             />
 
-             <ThemedText style={styles.subtext}  onPress={handleIssueFormPage}>still having troubles?<Text style={styles.spanText}>Click Here</Text> </ThemedText>
+
+            <TextInput
+                style={styles.input}
+                placeholder="Subject"
+                placeholderTextColor="#AAB3BB"
+                value={subject}
+                onChangeText={setSubject}
+            />
+
+            {/* Description Input */}
+            <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Description"
+                placeholderTextColor="#AAB3BB"
+                value={description}
+                onChangeText={setDescription}
+                multiline
+                numberOfLines={4}
+            />
+
+           
+         
             <ThemedButton
-                title="Send Email Code"
-                onPress={handleSendRecoveryEmail}
+                title="Submit"
+                onPress={handleShowFormSubmittedSuccess}
                 style={styles.button}
             />
         </ThemedView>
@@ -65,27 +79,21 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        
     },
-   spanText: {
-    color: '#B976FF',
-    textDecorationLine: 'underline', // This adds the underline
-    textDecorationColor: '#B976FF',  // This sets the underline color
-    },
-    changePhoneNumber: {
+    spanText: {
         color: '#B976FF',
-        fontSize: 18,
-        fontWeight: '500',
+        textDecorationLine: 'underline',
+        textDecorationColor: '#B976FF',
     },
     subtext: {
         fontSize: 16,
         color: 'rgba(151, 156, 158, 1)',
         marginBottom: 40,
-       alignSelf: 'center',
+        alignSelf: 'center',
         maxWidth: 300,
         textAlign: 'center',
         position: 'absolute',
-        bottom: 40, // Distance from the bottom
+        bottom: 40,
         left: 16,
         right: 16,
         alignSelf: 'center',
@@ -93,7 +101,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         fontWeight: '800',
-        // marginBottom: 10,
         marginLeft: 10,
     },
     subtitle: {
@@ -107,20 +114,25 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 10,
         fontSize: 16,
-        marginBottom: 20,
+        marginBottom: 10,
         color: '#ffffff',
-        marginTop: 50
+        marginTop: 10,
+    },
+    textArea: {
+        height: 200, // Adjust the height for the text area
+        textAlignVertical: 'top', // Ensure the text starts at the top
+        
     },
     button: {
         position: 'absolute',
-        bottom: 20, 
+        bottom: 20,
         left: 16,
         right: 16,
         alignSelf: 'center',
     },
-    welcomeText:{
+    welcomeText: {
         color: '#B976FF',
-    }
+    },
 });
 
-export default AccountRecovery;
+export default LoginIssueForm;

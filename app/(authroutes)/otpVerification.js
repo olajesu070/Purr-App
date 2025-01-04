@@ -34,7 +34,7 @@ const OtpVerification = ({ navigation }) => {
                  <ThemedButton
                     title={`Didn't receive code?`}
                     theme='secondary'
-                    href={{ pathname: '/otpVerification', params: { option: 'Sign Up' } }}
+                    href={{ pathname: '/registrationPage', params: { option: 'Sign Up' } }}
                 />
             </View>
         </ThemedView>

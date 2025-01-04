@@ -17,6 +17,10 @@ export default function AuthLayout() {
             <Stack.Screen name="otpVerification" />
             <Stack.Screen name="loginWithPhonenumber" />
             <Stack.Screen name="accountRecovery" />
+            <Stack.Screen name="loginIssueForm" />
+            <Stack.Screen name="loginIssueFormSuccess" />
+            <Stack.Screen name="registrationPage" />
+            <Stack.Screen name="profileTagPage" />
         </Stack>
         </SafeAreaView>
     )

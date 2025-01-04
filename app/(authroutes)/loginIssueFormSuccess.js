@@ -6,21 +6,18 @@ import { ThemedText } from '@/components/ThemedText';
 import ThemedButton from '../../components/ThemedButton';
 import { router } from 'expo-router';
 
-const AccountRecovery = ({ navigation }) => {
+const LoginIssueFormSuccess = ({ navigation }) => {
     const [email, setEmail] = useState('');
 
-    const handleSendRecoveryEmail = () => {
-        console.log("email address:", email);
-        // Proceed to OTP verification
+    const handleFormSubmitted = () => {
         router.push({
             pathname: '/',
-            params: { email },
         });
     };
 
     const handleIssueFormPage = () => {
         router.push({
-            pathname: '/loginIssueForm',
+            pathname: '/',
         });
     };
 
@@ -35,21 +32,21 @@ const AccountRecovery = ({ navigation }) => {
             Having&nbsp;
                 <Text style={styles.welcomeText}>Trouble?</Text>
             </ThemedText>
-            <ThemedText style={styles.subtitle}>Complete below to continue</ThemedText>
-          
-            <TextInput
-                style={styles.input}
-                placeholder="Email Address"
-                placeholderTextColor="#AAB3BB"
-                keyboardType="email-address"
-                value={email}
-                onChangeText={setEmail}
-            />
 
-             <ThemedText style={styles.subtext}  onPress={handleIssueFormPage}>still having troubles?<Text style={styles.spanText}>Click Here</Text> </ThemedText>
+            <View style={styles.textContainer}>
+                <ThemedText style={styles.subtext}>
+                    Your ticket has been <Text style={styles.spanText}>submitted</Text>
+                </ThemedText>
+                {/* <View style={styles.break} /> */}
+                <ThemedText style={styles.subtext}>
+                    Please allow up to 24-48 hours for the Purr team to reply.
+                </ThemedText>
+            </View>
+
+
             <ThemedButton
-                title="Send Email Code"
-                onPress={handleSendRecoveryEmail}
+                title="Ok"
+                onPress={handleFormSubmitted}
                 style={styles.button}
             />
         </ThemedView>
@@ -61,6 +58,21 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 20,
     },
+
+    textContainer: {
+    flex: 1, // Ensures the container takes full height
+    justifyContent: 'center', // Vertically centers the content
+    alignItems: 'center', // Horizontally centers the content
+    padding: 20, // Adds some spacing around the text
+    },
+   
+    spanText: {
+        color: '#B976FF',
+        textDecorationLine: 'underline',
+        textDecorationColor: '#B976FF',
+    },
+
+
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -78,17 +90,17 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     subtext: {
-        fontSize: 16,
-        color: 'rgba(151, 156, 158, 1)',
-        marginBottom: 40,
+        fontSize: 18,
+        color: '#ffffff',
+        marginBottom: 5,
        alignSelf: 'center',
         maxWidth: 300,
         textAlign: 'center',
-        position: 'absolute',
         bottom: 40, // Distance from the bottom
         left: 16,
         right: 16,
         alignSelf: 'center',
+        fontWeight:'700'
     },
     title: {
         fontSize: 40,
@@ -100,6 +112,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#FFFFFF',
         marginLeft: 10,
+
     },
     input: {
         borderColor: '#ffffff',
@@ -113,7 +126,7 @@ const styles = StyleSheet.create({
     },
     button: {
         position: 'absolute',
-        bottom: 20, 
+        bottom: 20, // Distance from the bottom
         left: 16,
         right: 16,
         alignSelf: 'center',
@@ -123,4 +136,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AccountRecovery;
+export default LoginIssueFormSuccess;
