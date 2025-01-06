@@ -3,14 +3,25 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import ThemedButton from '@/components/ThemedButton';
 import { router } from 'expo-router';
+import ThemedButton from '@/components/ThemedButton';
+
 
 const ProfileTagPage = () => {
     const [currentView, setCurrentView] = useState(1);
     const [selectedTags, setSelectedTags] = useState({
-        gender: [],
         industry: [],
+        zodiac: [],
+        interests: [],
+        activities: [],
+        sexuality: [],
+        gender: [],
+        pronouns: [],
+        positionPreference: [],
+        pride: [],
+        prowlingFor: [],
+        ethnicity: [],
+        relationshipStatus: [],
     });
 
     const handleTagSelect = (category, tag) => {
@@ -26,7 +37,7 @@ const ProfileTagPage = () => {
     };
 
     const handleNext = () => {
-        setCurrentView(2);
+        setCurrentView((prev) => prev + 1);
     };
 
     return (
@@ -41,90 +52,87 @@ const ProfileTagPage = () => {
                         <TouchableOpacity onPress={() => alert('Skipped')}>
                             <ThemedText style={styles.skipText}>Skip</ThemedText>
                         </TouchableOpacity>
-                        
                     </View>
+                    <ThemedText style={styles.tagSelectionInstruction}>Choose one, some, or none...your choice!</ThemedText>
 
+                    {/* Interest Tags */}
                     <View style={styles.categoryContainer}>
-                        <Text style={styles.categoryTitle}>Your Industry</Text>
+                        <ThemedText style={styles.categoryTitle}>Your <Text style={styles.spanText}>Interests</Text></ThemedText>
                         <View style={styles.tagsContainer}>
-                            {['Advertising',
-    'Automotive',
-    'Agriculture',
-    'Commerce',
-    'Construction',
-    'Education',
-    'Entertainment',
-    'Energy',
-    'Finance',
-    'Hospitality',
-    'NSFW',
-    'Technology',
-    'Tourism',
-    'Transportation',
-    'Military',
-    'Public Services',
-    'Law Enforcement'].map((tag) => (
+                            {['Sports', 'Music', 'Traveling', 'Reading', 'Movies', 'Gaming', 'Fitness', 'Cooking', 'Photography'].map((tag) => (
                                 <TouchableOpacity
                                     key={tag}
-                                    style={[
-                                        styles.tag,
-                                        selectedTags.gender.includes(tag) && styles.selectedTag,
-                                    ]}
-                                    onPress={() => handleTagSelect('gender', tag)}
+                                    style={[styles.tag, selectedTags.interests.includes(tag) && styles.selectedTag]}
+                                    onPress={() => handleTagSelect('interests', tag)}
                                 >
-                                    <Text
-                                        style={[
-                                            styles.tagText,
-                                            selectedTags.gender.includes(tag) && styles.selectedTagText,
-                                        ]}
-                                    >
-                                        {tag}
-                                    </Text>
+                                    <Text style={[styles.tagText, selectedTags.interests.includes(tag) && styles.selectedTagText]}>{tag}</Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
                     </View>
 
+                    {/* Activities Tags */}
                     <View style={styles.categoryContainer}>
-                        <Text style={styles.categoryTitle}>Your Industry</Text>
+                        <ThemedText style={styles.categoryTitle}>Your <Text style={styles.spanText}>Activities</Text></ThemedText>
                         <View style={styles.tagsContainer}>
-                            {['Tech', 'Finance', 'Education', 'Health', 'Other'].map((tag) => (
+                            {['Hiking', 'Dancing', 'Painting', 'Volunteering', 'Blogging', 'Shopping', 'Gardening'].map((tag) => (
                                 <TouchableOpacity
                                     key={tag}
-                                    style={[
-                                        styles.tag,
-                                        selectedTags.industry.includes(tag) && styles.selectedTag,
-                                    ]}
-                                    onPress={() => handleTagSelect('industry', tag)}
+                                    style={[styles.tag, selectedTags.activities.includes(tag) && styles.selectedTag]}
+                                    onPress={() => handleTagSelect('activities', tag)}
                                 >
-                                    <Text
-                                        style={[
-                                            styles.tagText,
-                                            selectedTags.industry.includes(tag) && styles.selectedTagText,
-                                        ]}
-                                    >
-                                        {tag}
-                                    </Text>
+                                    <Text style={[styles.tagText, selectedTags.activities.includes(tag) && styles.selectedTagText]}>{tag}</Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
                     </View>
 
-                    <TouchableOpacity style={styles.button} onPress={handleNext}>
-                        <Text style={styles.buttonText}>Next</Text>
-                    </TouchableOpacity>
+                    <ThemedButton
+                        title="Next"
+                        onPress={handleNext}
+                        style={styles.button}
+                    />
+
                 </ScrollView>
             )}
 
             {currentView === 2 && (
-                <View style={styles.summaryContainer}>
-                    <Text style={styles.summaryTitle}>Summary</Text>
-                    <Text style={styles.summaryText}>Gender: {selectedTags.gender.join(', ') || 'Not selected'}</Text>
-                    <Text style={styles.summaryText}>Industry: {selectedTags.industry.join(', ') || 'Not selected'}</Text>
-                    <TouchableOpacity style={styles.button} onPress={() => alert('Profile Updated!')}>
-                        <Text style={styles.buttonText}>Submit</Text>
-                    </TouchableOpacity>
-                </View>
+                <ScrollView contentContainerStyle={styles.formContainer}>
+                    <ThemedText style={styles.tagSelectionInstruction}>Choose one, some, or none...your choice!</ThemedText>
+
+                    {/* Additional Categories */}
+                    {[
+                        { title: 'Sexuality', category: 'sexuality', tags: ['Heterosexual', 'Homosexual', 'Bisexual', 'Pansexual', 'Asexual'] },
+                        { title: 'Gender', category: 'gender', tags: ['Male', 'Female', 'Non-Binary', 'Genderqueer'] },
+                        { title: 'Pronouns', category: 'pronouns', tags: ['He/Him', 'She/Her', 'They/Them'] },
+                        { title: 'Position Preference', category: 'positionPreference', tags: ['Top', 'Bottom', 'Versatile'] },
+                        { title: 'Pride', category: 'pride', tags: ['LGBTQ+', 'Ally', 'Advocate', 'Activist'] },
+                        { title: 'Prowling For', category: 'prowlingFor', tags: ['Friendship', 'Networking', 'Dating', 'Long-term Relationship'] },
+                        { title: 'Ethnicity', category: 'ethnicity', tags: ['Asian', 'Black', 'Caucasian', 'Hispanic', 'Mixed Race', 'Other'] },
+                        { title: 'Relationship Status', category: 'relationshipStatus', tags: ['Single', 'In a Relationship', 'Married', 'Open Relationship'] },
+                    ].map(({ title, category, tags }) => (
+                        <View style={styles.categoryContainer} key={category}>
+                            <ThemedText style={styles.categoryTitle}>Your <Text style={styles.spanText}>{title}</Text></ThemedText>
+                            <View style={styles.tagsContainer}>
+                                {tags.map((tag) => (
+                                    <TouchableOpacity
+                                        key={tag}
+                                        style={[styles.tag, selectedTags[category].includes(tag) && styles.selectedTag]}
+                                        onPress={() => handleTagSelect(category, tag)}
+                                    >
+                                        <Text style={[styles.tagText, selectedTags[category].includes(tag) && styles.selectedTagText]}>{tag}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </View>
+                    ))}
+
+                    <ThemedButton
+                        title="Submit"
+                        onPress={() => alert('Profile Updated!')}
+                        style={styles.button}
+                    />
+                </ScrollView>
             )}
         </ThemedView>
     );
@@ -139,7 +147,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 5,
     },
     buildProfileText: {
         fontSize: 18,
@@ -151,14 +159,27 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         color: '#B976FF',
     },
+    tagSelectionInstruction: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#fff',
+        fontStyle: 'italic',
+        textAlign: 'center',
+        alignSelf: 'center',
+        marginBottom: 20,
+    },
     categoryContainer: {
         marginBottom: 30,
     },
     categoryTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
-        color: '#333',
+        color: '#fff',
+    },
+    spanText: {
+        color: '#B976FF',
+        textDecorationLine: 'underline',
     },
     tagsContainer: {
         flexDirection: 'row',
@@ -167,45 +188,26 @@ const styles = StyleSheet.create({
     tag: {
         padding: 10,
         margin: 5,
-        borderWidth: 1,
-        borderColor: '#ccc',
         borderRadius: 20,
-        backgroundColor: '#fff',
+        backgroundColor: '#303437',
     },
     selectedTag: {
-        backgroundColor: '#4CAF50',
-        borderColor: '#4CAF50',
+        backgroundColor: '#B976FF',
     },
     tagText: {
-        color: '#333',
+        color: '#fff',
+        fontSize: 14,
     },
     selectedTagText: {
         color: '#fff',
     },
     button: {
-        marginTop: 20,
-        backgroundColor: '#4CAF50',
-        padding: 15,
-        borderRadius: 8,
+        // marginTop: 20,
         alignItems: 'center',
     },
     buttonText: {
         color: '#fff',
         fontSize: 16,
-    },
-    summaryContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    summaryTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
-    summaryText: {
-        fontSize: 16,
-        marginBottom: 10,
     },
 });
 
