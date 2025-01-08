@@ -1,12 +1,16 @@
+import { ThemedView } from '@/components/ThemedView';
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
 const ChatPage = () => {
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Chat Page</Text>
-            <Text>Welcome to the chat page. Start your conversation here!</Text>
-        </View>
+         <ThemedView >
+             <View>
+               <Text>
+                       this is the add new user screen
+                   </Text>
+                </View>
+            </ThemedView>
     );
 };
 

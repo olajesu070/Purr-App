@@ -1,13 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { ThemedView } from '@/components/ThemedView';
+
 
 
 const AddUserPage = () => {
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Add New User</Text>
-            <Text>This is the Add New User page.</Text>
-        </View>
+        <ThemedView >
+        <View>
+        <Text>
+        this is the add new user screen
+    </Text>
+           </View>
+       </ThemedView>
     );
 };
 

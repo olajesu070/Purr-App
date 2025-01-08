@@ -1,12 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { ThemedView } from '@/components/ThemedView';
+
 
 const MapPage = () => {
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Map Page</Text>
-            <Text>This is the map page.</Text>
-        </View>
+        <ThemedView >
+         <View>
+         <Text>
+        this is the add new user screen
+    </Text>
+    </View>
+        </ThemedView>
     );
 };
 
