@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  Animated,
   ScrollView,
   ImageBackground,
   Modal,
@@ -16,10 +17,11 @@ import { StatusBar } from 'expo-status-bar';
 import Filter from '../../assets/images/headerFilter.png';
 import Logo from '../../assets/images/headerLogo.png';
 import Avatar from '../../assets/images/headerAvatar.png';
+import ProLogo from '../../assets/images/leftSideBarProLogo.png';
+
+import BackArrow from '../../assets/images/backArrow.png';
 import * as Progress from 'react-native-progress';
 import ThemedButton from '../../components/ThemedButton';
-
-
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState('Feed'); // Manage active tab state
@@ -28,6 +30,59 @@ export default function HomeScreen() {
   const [progress, setProgress] = useState(0);
   const [blurred, setBlurred] = useState(true);
   const [adCompleted, setAdCompleted] = useState(false); // Track ad completion
+  const [leftSidebarVisible, setLeftSidebarVisible] = useState(false);
+  const [rightSidebarVisible, setRightSidebarVisible] = useState(false);
+  const leftSidebarAnimation = useState(new Animated.Value(0))[0];
+  const rightSidebarAnimation = useState(new Animated.Value(0))[0];
+  const [toggleStates, setToggleStates] = useState({
+    age: true,
+    pride: false,
+    relationshipStatus: false,
+    verified: false,
+    profilePicture: false,
+    prowlingFor: false,
+    position: false,
+    activities: false,
+    interest: false,
+    zodiacSign: false,
+    industry: false,
+    ethnicity: false,
+  });
+  
+
+  const handleToggle = (key) => {
+    setToggleStates((prevState) => ({
+      ...prevState,
+      [key]: !prevState[key],
+    }));
+  };
+  
+
+const resetBasicToggles = () => {
+  setToggleStates((prevState) => ({
+    ...prevState, // Preserve the current state
+    age: true, // Reset only the basic toggles
+    pride: false,
+    relationshipStatus: false,
+  }));
+};
+
+const resetProToggles = () => {
+  setToggleStates((prevState) => ({
+    ...prevState, // Preserve the current state
+    verified: false, // Reset only the pro toggles
+    profilePicture: false,
+    prowlingFor: false,
+    position: false,
+    activities: false,
+    interest: false,
+    zodiacSign: false,
+    industry: false,
+    ethnicity: false,
+  }));
+};
+
+
 
 
   // Function to handle closing the first modal and opening the ad modal
@@ -70,23 +125,329 @@ export default function HomeScreen() {
     image: images[Math.floor(Math.random() * images.length)], // Randomly select an image
   }));
 
+
+  const toggleLeftSidebar = () => {
+    if (!leftSidebarVisible) {
+      setLeftSidebarVisible(true);
+      Animated.timing(leftSidebarAnimation, {
+        toValue: 0,
+        duration: 0,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(leftSidebarAnimation, {
+        toValue: -0,
+        duration: 0,
+        useNativeDriver: false,
+      }).start(() => setLeftSidebarVisible(false));
+    }
+  };
+
+  const toggleRightSidebar = () => {
+    if (!rightSidebarVisible) {
+      setRightSidebarVisible(true);
+      Animated.timing(rightSidebarAnimation, {
+        toValue: 0,
+        duration: 0,
+        useNativeDriver: false,
+      }).start();
+    } else {
+      Animated.timing(rightSidebarAnimation, {
+        toValue: 0,
+        duration: 0,
+        useNativeDriver: false,
+      }).start(() => setRightSidebarVisible(false));
+    }
+  };
+
+ 
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="#202325" barStyle="light-content" />
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.filterButton}>
+        <TouchableOpacity style={styles.filterButton}  onPress={toggleLeftSidebar}>
           <Image source={Filter} style={styles.filterIcon} />
         </TouchableOpacity>
         <View style={styles.logoContainer}>
           <Image source={Logo} style={styles.logo} />
           <Text style={styles.logoText}>Purr</Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={toggleRightSidebar}>
           <Image source={Avatar} style={styles.avatar} />
         </TouchableOpacity>
       </View>
+
+      {/* Left Sidebar */}
+              {leftSidebarVisible && (
+          <Animated.View style={[styles.leftSidebarContainer, { left: leftSidebarAnimation }]}>
+            {/* Top Row */}
+            <View style={styles.leftSidebarTopRow}>
+              <TouchableOpacity onPress={toggleLeftSidebar}>
+                <Text style={styles.leftSidebarBackButtonText}>
+                  <Image
+                    source={BackArrow}
+                    width={24}
+                    height={24}
+                  />
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.leftSidebarFiltersText}>Filters</Text>
+              <TouchableOpacity onPress={resetBasicToggles}>
+                <Text style={styles.leftSidebarResetText}>Reset</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Content Row */}
+
+          <View style={styles.leftSidebarContentRowContainer}>
+              <ScrollView style={styles.scrollView}>
+              {/* Basic Toggles Section */}
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Age</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.age ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('age')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.age ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Pride</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.pride ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('pride')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.pride ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Relationship Status</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.relationshipStatus ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('relationshipStatus')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.relationshipStatus ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+                        </View>
+                      
+
+              {/* pro Reset Button */}
+                        <View style={styles.proToggleRowContainer}>
+                          <Image source={ProLogo} style={styles.proToggleLogo} />
+                          <TouchableOpacity onPress={resetProToggles} style={styles.proToggleResetButton}>
+                            <Text style={styles.proToggleResetText}>Reset</Text>
+                          </TouchableOpacity>
+                        </View>
+
+              {/* Pro/Paid Toggles Section */}
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Verified</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.verified ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('verified')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.verified ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Profile Picture</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.profilePicture ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('profilePicture')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.profilePicture ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Prowling For</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.prowlingFor ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('prowlingFor')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.prowlingFor ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Position</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.position ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('position')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.position ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Activities</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.activities ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('activities')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.activities ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Interest</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.interest ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('interest')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.interest ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Zodiac Sign</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.zodiacSign ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('zodiacSign')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.zodiacSign ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Industry</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.industry ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('industry')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.industry ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.leftSidebarContentRow}>
+                <Text style={styles.leftSidebarContentText}>Ethnicity</Text>
+                <TouchableOpacity
+                  style={[
+                    styles.leftSidebarToggleButton,
+                    toggleStates.ethnicity ? styles.leftSidebarToggleOn : styles.leftSidebarToggleOff,
+                  ]}
+                  onPress={() => handleToggle('ethnicity')}
+                >
+                  <Animated.View
+                    style={[
+                      styles.leftSidebarToggleCircle,
+                      toggleStates.ethnicity ? styles.leftSidebarToggleCircleOn : styles.leftSidebarToggleCircleOff,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+            
+              </ScrollView>
+          </View>
+
+          </Animated.View>
+        )}
+
+
+          {/* Right Sidebar */}
+          {rightSidebarVisible && (
+            <Animated.View style={[styles.sidebar, { right: rightSidebarAnimation }]}>
+              <Text style={styles.sidebarText}>Right Sidebar Menu</Text>
+              <TouchableOpacity onPress={toggleRightSidebar} style={styles.closeButton}>
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          )}
 
       {/* Tab Menu */}
       <View style={styles.tabMenu}>
@@ -199,7 +560,7 @@ export default function HomeScreen() {
         transparent={true}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={styles.modalOverlay}> 
           <View style={styles.modalContent}>
             <View style={styles.modalContainer}>
               <Text style={styles.advertModalTitle}>
@@ -591,8 +952,6 @@ tab: {
   width: '100%',
   backgroundColor: '#303437',
   padding: 10,
-  // borderTopLeftRadius: 10,
-  // borderTopRightRadius: 10,
   alignItems: 'center',
   borderTopColor:'#B976FF',
   borderTopWidth:5
@@ -671,5 +1030,157 @@ modalContainer: {
   disabledButton: {
     backgroundColor: "#d3d3d3", // Gray color for disabled state
   },
-  
+  sidebar: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: 300,
+    backgroundColor: '#333',
+    padding: 20,
+    justifyContent: 'center',
+    zIndex: 1000,
+  },
+  sidebarText: {
+    color: '#fff',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  closeButton: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#555',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 14,
+  },
+ leftSidebarContainer: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: '80%',
+    backgroundColor: '#000000',
+    padding: 20,
+    zIndex: 1001,
+  },
+  leftSidebarTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  leftSidebarBackButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  leftSidebarFiltersText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  leftSidebarResetText: {
+    color: '#B976FF',
+    fontSize: 12,
+    fontWeight:'500'
+  },
+
+    leftSidebarContentRowContainer: {
+    flexDirection: 'column', 
+      padding: 10, 
+      marginBottom:20
+  },
+  leftSidebarContentRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    alignItems: 'center',
+    marginTop: 10,
+    
+  },
+ 
+  leftSidebarContentText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight:'700'
+  },
+  leftSidebarToggleButton: {
+    width: 56,
+    height: 32,
+    borderRadius: 32,
+    justifyContent: 'center',
+    paddingHorizontal: 2,
+  },
+  leftSidebarToggleOn: {
+    backgroundColor: '#B976FF', // Green when ON
+  },
+  leftSidebarToggleOff: {
+    backgroundColor: '#6C7072', // Gray when OFF
+  },
+  leftSidebarToggleCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 50,
+    backgroundColor: '#ffffff',
+  },
+  leftSidebarToggleCircleOn: {
+    alignSelf: 'flex-end', // Positioned to the right
+  },
+  leftSidebarToggleCircleOff: {
+    alignSelf: 'flex-start', // Positioned to the left
+  },
+
+    proToggleRowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    width: '100%',
+    marginVertical: 20,
+  },
+  proToggleLogo: {
+    flex: 1,
+    resizeMode: 'contain',
+    justifyContent: 'center',
+  },
+  proToggleResetButton: {
+    padding: 10,
+    justifyContent: 'center',
+  },
+  proToggleResetText: {
+    color: '#B976FF', // or your desired reset text color
+    fontSize: 12,
+    fontWeight:'500'
+  },
+  proToggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  proToggleText: {
+    fontSize: 16,
+    marginRight: 10,
+  },
+  proToggleButton: {
+    width: 40,
+    height: 20,
+    borderRadius: 20,
+    backgroundColor: '#6C7072',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 2,
+  },
+ 
+  proToggleCircle: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: 'white',
+  },
+  proToggleCircleOn: {
+    transform: [{ translateX: 20 }],
+  },
+  proToggleCircleOff: {
+    transform: [{ translateX: 0 }],
+  },
 });
