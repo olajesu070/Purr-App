@@ -18,10 +18,14 @@ import Filter from '../../assets/images/headerFilter.png';
 import Logo from '../../assets/images/headerLogo.png';
 import Avatar from '../../assets/images/headerAvatar.png';
 import ProLogo from '../../assets/images/leftSideBarProLogo.png';
+import VerifyMe from '../../assets/images/VerifyMe.png';
 
 import BackArrow from '../../assets/images/backArrow.png';
+import AppIcon from '../../assets/images/appIcon.png';
 import * as Progress from 'react-native-progress';
 import ThemedButton from '../../components/ThemedButton';
+import { Ionicons } from "@expo/vector-icons";
+
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState('Feed'); // Manage active tab state
@@ -48,8 +52,6 @@ export default function HomeScreen() {
     industry: false,
     ethnicity: false,
   });
-  
-
   const handleToggle = (key) => {
     setToggleStates((prevState) => ({
       ...prevState,
@@ -81,9 +83,6 @@ const resetProToggles = () => {
     ethnicity: false,
   }));
 };
-
-
-
 
   // Function to handle closing the first modal and opening the ad modal
   const openAdModal = () => {
@@ -159,7 +158,6 @@ const resetProToggles = () => {
       }).start(() => setRightSidebarVisible(false));
     }
   };
-
  
 
   return (
@@ -440,14 +438,74 @@ const resetProToggles = () => {
 
 
           {/* Right Sidebar */}
-          {rightSidebarVisible && (
-            <Animated.View style={[styles.sidebar, { right: rightSidebarAnimation }]}>
-              <Text style={styles.sidebarText}>Right Sidebar Menu</Text>
-              <TouchableOpacity onPress={toggleRightSidebar} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          )}
+      
+
+      {rightSidebarVisible && (
+        <Animated.View style={[styles.rightSidebar, { right: rightSidebarAnimation }]}>
+          {/* Header Row */}
+          <View style={styles.rightSidebarHeaderRow}>
+            <TouchableOpacity style={styles.rightSidebarBackButton} onPress={toggleRightSidebar} >
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.rightSidebarUsername}>StrapMaster69</Text>
+          </View>
+          <View style={styles.rightSidebarDivider} />
+
+          {/* Menu Items */}
+          <View style={styles.rightSidebarMenu}>
+            <TouchableOpacity style={styles.rightSidebarMenuItem}>
+              <Ionicons name="person-circle" style={styles.rightSidebarMenuIcon} />
+              <Text style={styles.rightSidebarMenuText}>My Profile</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.rightSidebarMenuItem}>
+              <Ionicons name="settings" style={styles.rightSidebarMenuIcon} />
+              <Text style={styles.rightSidebarMenuText}>Settings</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.rightSidebarMenuItem}>
+              <Ionicons name="help-circle" style={styles.rightSidebarMenuIcon} />
+              <Text style={styles.rightSidebarMenuText}>Submit Ticket</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.rightSidebarMenuItem}>
+              <Image
+                source={AppIcon}
+                width={25 }
+                height={25}
+                 style={styles.rightSidebarMenuIcon}
+              />
+              <Text style={styles.rightSidebarMenuText}>Change App Icon</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.rightSidebarMenuItem}>
+              <Image
+                source={VerifyMe}
+                width={25 }
+                height={25}
+                 style={styles.rightSidebarMenuIcon}
+              />
+              <Text style={styles.rightSidebarMenuText}>Verify Me (ONLY IF BOUGHT)</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Close Button */}
+          <View style={styles.rightSidebarTextAdsContainer}>
+            {/* Image */}
+            <Image source={ProLogo} style={styles.rightSidebarTextAdsProLogo}  />
+            
+            {/* Text */}
+            <Text style={styles.rightSidebarTrialText}>7 Days Trial</Text>
+            
+            {/* Button */}
+            <ThemedButton
+              title="Use Offer"
+              style={styles.rightSidebarTextAdsButton}
+            />
+          </View>
+
+          {/* <TouchableOpacity onPress={toggleRightSidebar} style={styles.rightSidebarCloseButton}>
+            <Text style={styles.rightSidebarCloseButtonText}>Close</Text>
+          </TouchableOpacity> */}
+        </Animated.View> 
+      )}
+    
 
       {/* Tab Menu */}
       <View style={styles.tabMenu}>
@@ -753,6 +811,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 40,
   },
+   button: {
+        position: 'absolute',
+        bottom: 0,
+        left: 1,
+        right: 1,
+        alignSelf: 'center',
+        
+    },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1030,21 +1096,8 @@ modalContainer: {
   disabledButton: {
     backgroundColor: "#d3d3d3", // Gray color for disabled state
   },
-  sidebar: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    width: 300,
-    backgroundColor: '#333',
-    padding: 20,
-    justifyContent: 'center',
-    zIndex: 1000,
-  },
-  sidebarText: {
-    color: '#fff',
-    fontSize: 16,
-    marginBottom: 20,
-  },
+ 
+ 
   closeButton: {
     marginTop: 20,
     padding: 10,
@@ -1183,4 +1236,119 @@ modalContainer: {
   proToggleCircleOff: {
     transform: [{ translateX: 0 }],
   },
+
+
+ 
+   rightSidebar: {
+   position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: '80%',
+    backgroundColor: '#000000',
+    padding: 20,
+    zIndex: 1001,
+  },
+  rightSidebarHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical:10
+  },
+  rightSidebarBackButton: {
+    padding: 10,
+  },
+  rightSidebarUsername: {
+    color: "white",
+    fontSize: 18,
+    textAlign: "center",
+    flex: 1,
+    fontWeight:'700'
+  },
+  rightSidebarDivider: {
+    height: 2,
+    backgroundColor: "#202325",
+    marginVertical: 10,
+  },
+  rightSidebarMenu: {
+    // marginTop: 20,
+  },
+  rightSidebarMenuItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 15,
+  },
+  rightSidebarMenuIcon: {
+    fontSize: 20,
+    color: "white",
+    marginRight: 30,
+  },
+  rightSidebarMenuText: {
+    color: "#ffffff",
+    fontSize: 16,
+    fontWeight:'700'
+  },
+  rightSidebarSidebar: {
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    width: 300,
+    backgroundColor: "#1e1e1e",
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  rightSidebarSidebarText: {
+    color: "white",
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  rightSidebarCloseButton: {
+    padding: 10,
+    backgroundColor: "red",
+    borderRadius: 5,
+    alignSelf: "flex-start",
+    marginBottom:90
+  },
+  rightSidebarCloseButtonText: {
+    color: "white",
+    fontSize: 14,
+  },
+  rightSidebarToggleButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#1e88e5",
+    padding: 10,
+    borderRadius: 5,
+  },
+  rightSidebarToggleButtonText: {
+    color: "white",
+    fontSize: 14,
+  },
+  rightSidebarTextAds: {
+  marginTop:40
+  },
+  rightSidebarTextAdsContainer: {
+    position: "absolute",
+    bottom: 20,
+    width: "100%",
+    alignItems: "center",
+    padding: 20,
+  },
+  rightSidebarTextAdsProLogo: {
+    marginBottom: 10,
+  },
+  rightSidebarTrialText: {
+    fontSize: 18,
+    color: "white",
+    marginBottom: 10,
+    fontWeight:'800'
+  },
+  rightSidebarTextAdsButton: {
+    width:'100%'
+  },
+
 });
