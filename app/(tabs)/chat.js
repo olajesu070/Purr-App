@@ -256,7 +256,7 @@ const ChatPage = () => {
                 {isModalVisible && (
               <SponsoredAdsCard
                     imageSource={require('../../assets/images/adsBanner1.png')}
-                    url="https://www.google.com"
+                    url="https://www.purrsocial.com/"
                     onClose={closeModal}
                   />
                 )}
