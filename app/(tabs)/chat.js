@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity,} from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
-import SponsoredAdsCard from '@/components/tabsComponents/sponsoredAdsCard';
+import SponsoredAdsCard from '../../components/tabsComponents/SponsoredAdsCard';
 import { StatusBar } from 'expo-status-bar';
 
 const ChatPage = () => {
