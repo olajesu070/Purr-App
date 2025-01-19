@@ -3,12 +3,16 @@ import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity,} from 'rea
 import { ThemedView } from '@/components/ThemedView';
 import SponsoredAdsCard from '../../components/tabsComponents/SponsoredAdsCard';
 import { StatusBar } from 'expo-status-bar';
+import { useRouter } from 'expo-router';
+import MessageItem from '@/components/ui/MessageItem';
 
 const ChatPage = () => {
   const [isModalVisible, setModalVisible] = useState(false);
-
+  const router = useRouter();
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
+
+ 
 
 
   return (
@@ -126,126 +130,56 @@ const ChatPage = () => {
          {/* My Message */}
         <View style={styles.myMessagesContainer}>
           <Text style={styles.myMessagesHeader}>My Messages</Text>
-         {/*online user different user Message */}
-          <View style={styles.myMessage}>
-            <Image source={require('../../assets/images/user1Dp.png')} style={styles.mymessagesProfilePicture} />
-            <View style={styles.mymessagesContent}>
-              <View style={styles.mymessagesNameRow}>
-                <View style={styles.mymessagesOnlineBadge}></View>
-                <Text style={styles.mymessagesSenderName}>Inique</Text>
-                <View style={styles.mymessagesVerifiedBadge}>
-                  <Text style={styles.mymessagesVerifiedTick}>✔</Text>
-                </View>
-              </View>
-              <Text style={styles.mymessagesText}>Hey, you coming out tonight??! I wa...</Text>
-            </View>
-            <View style={styles.mymessagesBadgeContainer}>
-              <Text style={styles.mymessagesDate}>Yesterday</Text>
-              <View style={styles.mymessagesUnreadCounter}>
-                <Text style={styles.mymessagesUnreadText}>3</Text>
-              </View>
-            </View>
-          </View>
-          {/* offline userdifferent user Message */}
-          <View style={styles.myMessage}>
-            <Image source={require('../../assets/images/user1Dp.png')} style={styles.mymessagesProfilePicture} />
-            <View style={styles.mymessagesContent}>
-              <View style={styles.mymessagesNameRow}>
-                <View style={styles.mymessagesOnlineBadgeOffline}></View>
-                <Text style={styles.mymessagesSenderNameOffline}>Cheryl</Text>
-                <View style={styles.mymessagesVerifiedBadge}>
-                  <Text style={styles.mymessagesVerifiedTick}>✔</Text>
-                </View>
-              </View>
-              <Text style={styles.mymessagesTextOffline}>Hey, you coming out tonight??!</Text>
-            </View>
-            <View style={styles.mymessagesBadgeContainer}>
-              <Text style={styles.mymessagesDate}>Yesterday</Text>
-              {/* <View style={styles.mymessagesUnreadCounter}>
-                <Text style={styles.mymessagesUnreadText}>1</Text>
-              </View> */}
-            </View>
-          </View>
-           {/*online user different user Message */}
-          <View style={styles.myMessage}>
-            <Image source={require('../../assets/images/user1Dp.png')} style={styles.mymessagesProfilePicture} />
-            <View style={styles.mymessagesContent}>
-              <View style={styles.mymessagesNameRow}>
-                <View style={styles.mymessagesOnlineBadge}></View>
-                <Text style={styles.mymessagesSenderName}>Stacey</Text>
-                <View style={styles.mymessagesVerifiedBadge}>
-                  <Text style={styles.mymessagesVerifiedTick}>✔</Text>
-                </View>
-              </View>
-              <Text style={styles.mymessagesText}>Hey, how’s it going?</Text>
-            </View>
-            <View style={styles.mymessagesBadgeContainer}>
-              <Text style={styles.mymessagesDate}>2 days Ago</Text>
-              <View style={styles.mymessagesUnreadCounter}>
-                <Text style={styles.mymessagesUnreadText}>3</Text>
-              </View>
-            </View>
-          </View>
-            {/* offline userdifferent user Message */}
-          <View style={styles.myMessage}>
-            <Image source={require('../../assets/images/user1Dp.png')} style={styles.mymessagesProfilePicture} />
-            <View style={styles.mymessagesContent}>
-              <View style={styles.mymessagesNameRow}>
-                <View style={styles.mymessagesOnlineBadge}></View>
-                <Text style={styles.mymessagesSenderNameOffline}>Hit my Line</Text>
-                <View style={styles.mymessagesVerifiedBadge}>
-                  <Text style={styles.mymessagesVerifiedTick}>✔</Text>
-                </View>
-              </View>
-              <Text style={styles.mymessagesTextOffline}>What’s going on?</Text>
-            </View>
-            <View style={styles.mymessagesBadgeContainer}>
-              <Text style={styles.mymessagesDate}>2 Days Ago</Text>
-              {/* <View style={styles.mymessagesUnreadCounter}>
-                <Text style={styles.mymessagesUnreadText}>1</Text>
-              </View> */}
-            </View>
-          </View>
-           {/*online user different user Message */}
-          <View style={styles.myMessage}>
-            <Image source={require('../../assets/images/user1Dp.png')} style={styles.mymessagesProfilePicture} />
-            <View style={styles.mymessagesContent}>
-              <View style={styles.mymessagesNameRow}>
-                <View style={styles.mymessagesOnlineBadgeOffline}></View>
-                <Text style={styles.mymessagesSenderName}>Business Couple</Text>
-                {/* <View style={styles.mymessagesVerifiedBadge}>
-                  <Text style={styles.mymessagesVerifiedTick}>✔</Text>
-                </View> */}
-              </View>
-              <Text style={styles.mymessagesText}>Hey, how’s it going?</Text>
-            </View>
-            <View style={styles.mymessagesBadgeContainer}>
-              <Text style={styles.mymessagesDate}>2 days Ago</Text>
-              <View style={styles.mymessagesUnreadCounter}>
-                <Text style={styles.mymessagesUnreadText}>3</Text>
-              </View>
-            </View>
-          </View>
-          {/* offline userdifferent user Message */}
-          <View style={styles.myMessage}>
-            <Image source={require('../../assets/images/user1Dp.png')} style={styles.mymessagesProfilePicture} />
-            <View style={styles.mymessagesContent}>
-              <View style={styles.mymessagesNameRow}>
-                <View style={styles.mymessagesOnlineBadgeOffline}></View>
-                <Text style={styles.mymessagesSenderNameOffline}>Cheryl</Text>
-                <View style={styles.mymessagesVerifiedBadge}>
-                  <Text style={styles.mymessagesVerifiedTick}>✔</Text>
-                </View>
-              </View>
-              <Text style={styles.mymessagesTextOffline}>Hey, you coming out tonight??!</Text>
-            </View>
-            <View style={styles.mymessagesBadgeContainer}>
-              <Text style={styles.mymessagesDate}>Yesterday</Text>
-              {/* <View style={styles.mymessagesUnreadCounter}>
-                <Text style={styles.mymessagesUnreadText}>1</Text>
-              </View> */}
-            </View>
-          </View>
+         <MessageItem
+            profilePicture={require('../../assets/images/user1Dp.png')}
+            senderName="Inique"
+            messageText="Hey, you coming out tonight??! I wa..."
+            date="Yesterday"
+            unreadCount={3}
+            onlineStatus={true}
+            verified={true}
+            onPress={() => router.push('/chat/detail')}
+          />
+          <MessageItem
+            profilePicture={require('../../assets/images/user1Dp.png')}
+            senderName="Cheryl"
+            messageText="Hey, you coming out tonight??!"
+            date="Yesterday"
+            unreadCount={0}
+            onlineStatus={false}
+            verified={true}
+            onPress={() => router.push('/chat/detail')}
+          />
+          <MessageItem
+            profilePicture={require('../../assets/images/user1Dp.png')}
+            senderName="Stacey"
+            messageText="Hey, how’s it going?"
+            date="2 days Ago"
+            unreadCount={3}
+            onlineStatus={true}
+            verified={true}
+            onPress={() => router.push('/chat/detail')}
+          />
+          <MessageItem
+            profilePicture={require('../../assets/images/user1Dp.png')}
+            senderName="Hit my Line"
+            messageText="What’s going on?"
+            date="2 Days Ago"
+            unreadCount={0}
+            onlineStatus={false}
+            verified={true}
+            onPress={() => router.push('/chat/detail')}
+          />
+          <MessageItem
+            profilePicture={require('../../assets/images/user1Dp.png')}
+            senderName="Business Couple"
+            messageText="Hey, how’s it going?"
+            date="2 days Ago"
+            unreadCount={3}
+            onlineStatus={false}
+            verified={false}
+            onPress={() => router.push('/chat/detail')}
+          />
 </View>
 
 
