@@ -3925,6 +3925,13 @@ expo-blur@~14.0.1:
   resolved "https://registry.npmjs.org/expo-blur/-/expo-blur-14.0.1.tgz"
   integrity sha512-3Q6jFBLbY8n2vwk28ycUC+eIlVhnlqwkXUKk/Lfaj+SGV3AZMQyrixe7OYwJdUfwqETBrnYYMB6uNrJzOSbG+g==
 
+expo-camera@^16.0.13:
+  version "16.0.13"
+  resolved "https://registry.npmjs.org/expo-camera/-/expo-camera-16.0.13.tgz"
+  integrity sha512-vUcD8Yc7boNBJVHmiA30qg8jJ4infXm82YqRHYrVGH9O8gzOnCWUqdJpSGdfPX7E5q3RVKvcezQDSOQF/QXIRA==
+  dependencies:
+    invariant "^2.2.4"
+
 expo-checkbox@~4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/expo-checkbox/-/expo-checkbox-4.0.0.tgz"
@@ -6715,6 +6722,11 @@ react-native-helmet-async@2.0.4:
     invariant "^2.2.4"
     react-fast-compare "^3.2.2"
     shallowequal "^1.1.0"
+
+react-native-image-picker@^7.2.3:
+  version "7.2.3"
+  resolved "https://registry.npmjs.org/react-native-image-picker/-/react-native-image-picker-7.2.3.tgz"
+  integrity sha512-zKIZUlQNU3EtqizsXSH92zPeve4vpUrsqHu2kkpCxWE9TZhJFZBb+irDsBOY8J21k0+Edgt06TMQGJ+iPUIXyA==
 
 react-native-is-edge-to-edge@^1.1.6:
   version "1.1.6"

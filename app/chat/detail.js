@@ -1,12 +1,15 @@
-import React,  { useRef, useState } from "react";
-import { KeyboardAvoidingView, Platform, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, TextInput, Alert, Modal, } from "react-native";
+import React,  { useRef, useState, useEffect } from "react";
+import { KeyboardAvoidingView, Platform, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, TextInput, Alert, Modal,FlatList } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router"; // Assuming you are using expo-router
 import { Ionicons } from "@expo/vector-icons"; // For icons
 import FilledFootStamp from '../../assets/images/filledFootStamp.png';
 import OutlineFootStamp from '../../assets/images/outlineFootStamp.png';
 import VaultImage from '../../assets/images/vaultImage.png';
+import GifImage from '../../assets/images/gifImage.png';
 import * as ImagePicker from 'expo-image-picker';
+import { launchCamera } from "react-native-image-picker";
+import { Camera } from "expo-camera";
 import ModalWrapper from "react-native-modal";
 
 
@@ -16,10 +19,69 @@ const ChatDetailScreen = () => {
     const [isModalVisible, setModalVisible] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Vault");
   const [vaultImages, setVaultImages] = useState(["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg"]);
-  const [disappearingPhotosCount, setDisappearingPhotosCount] = useState(5);  // You can set this dynamically
+    const [disappearingPhotosCount, setDisappearingPhotosCount] = useState(5);  
+    const [capturedImage, setCapturedImage] = useState(null);
+    const [hasPermission, setHasPermission] = useState(null);
+
 
     const router = useRouter();
     const scrollViewRef = useRef();  
+
+  const handleImagePress = (index) => {
+    setSelectedImage(index); // Set the selected image index
+  };
+
+
+   useEffect(() => {
+        (async () => {
+            const { status } = await Camera.requestCameraPermissionsAsync();
+            setHasPermission(status === "granted");
+            console.log("Camera permission status:", status);
+        })();
+    }, []);
+
+   const openCamera = async () => {
+  console.log("Opening camera...");
+
+  // Request camera permissions
+  const { status } = await ImagePicker.requestCameraPermissionsAsync();
+  if (status !== 'granted') {
+    console.log("Camera permission denied");
+    return;
+  }
+
+  // Launch camera to take a photo
+  const result = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,  // Allow editing the image
+    aspect: [4, 3],       // Aspect ratio
+  });
+
+  if (!result.cancelled) {
+    setCapturedImage(result.uri);
+    console.log("Image captured: ", result.uri);
+  }
+};
+
+    
+    const images = [
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+    require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+  require("../../assets/images/gifImage.png"),
+    ];
+    
 
 // Opens modal
   const openAttachmentModal = () => {
@@ -220,7 +282,6 @@ const ChatDetailScreen = () => {
                                 placeholderTextColor="#999"
                                 multiline={true}
                             />
-
                             {/* Send Button on the Right */}
                             <TouchableOpacity>
                                 <Ionicons name="send" size={25} color="white" style={styles.sendIcon} />
@@ -260,35 +321,72 @@ const ChatDetailScreen = () => {
           {/* Content for Camera Roll */}
                           {selectedTab === "Camera Roll" && (
                               
-                    <ScrollView style={styles.cameraRollContainer}>
-                        {/* Display only the default VaultImage */}
+                   <ScrollView style={styles.cameraRollContainer}>
+                    <View style={styles.imageContainer}>
+                        {/* Empty Box or Captured Image */}
+                       <TouchableOpacity style={styles.emptyBox} onPress={() => {
+    console.log("Empty box clicked");
+    openCamera();
+}}>
+                           {capturedImage ? (
+        <Image source={capturedImage} style={styles.capturedImage} />
+    ) : (
+        <Text style={styles.emptyBoxText}>+</Text>
+    )}
+                        </TouchableOpacity>
+
+                        {/* Default Vault Image */}
                         <Image source={VaultImage} style={styles.vaultImage} />
-                        
-                        {/* Disappearing photo text */}
-                         <View style={styles.disappearingPhotoBox}>
-                        <Text style={styles.disappearingPhotoText}>
-                            Disappearing Photo {"\n"}  0/5 Available - Watch Ad to Refresh
-                        </Text>
-                        </View>
-                        
-                        {/* Send Button */}
-                            <TouchableOpacity style={styles.sendButton}>
-                                <Text style={styles.sendButtonText}>Send</Text>
-                            </TouchableOpacity>
-                    </ScrollView>
+                    </View>
+
+      {/* Disappearing Photo Text */}
+      <View style={styles.disappearingPhotoBox}>
+        <Text style={styles.disappearingPhotoText}>
+          Disappearing Photo {"\n"} 0/5 Available - Watch Ad to Refresh
+        </Text>
+      </View>
+
+      {/* Send Button */}
+      <TouchableOpacity style={styles.sendButton}>
+        <Text style={styles.sendButtonText}>Send</Text>
+      </TouchableOpacity>
+    </ScrollView>
                             
           )}
 
           {/* Content for GIFs */}
                           {selectedTab === "GIF" && (
                               <ScrollView style={styles.gifContainer}>
-                        {/* Display only the default VaultImage */}
-                        <Image source={VaultImage} style={styles.vaultImage} />
-                        
-                        {/* Disappearing photo text */}
-                        
-                                  
-                                
+                                  {/* Display only the default VaultImage */}
+                                  <View style={styles.searchContainer}>
+                                      {/* Search Icon */}
+                                <Ionicons name="search" size={15} color="white" style={styles.searchIcon} />
+                        <TextInput 
+                            style={styles.searchInput} 
+                            placeholder="Search GIFY" 
+                            placeholderTextColor="#979C9E" 
+                        />
+                        </View>
+                       <ScrollView style={styles.scrollContainer}>
+                            <FlatList
+                                data={images}
+                                renderItem={({ item, index }) => (
+                                <TouchableOpacity onPress={() => handleImagePress(index)}>
+                                    <Image 
+                                    source={item} 
+                                    style={[
+                                        styles.gifImages, 
+                                        selectedImage === index && styles.selectedImage // Apply red border if selected
+                                    ]} 
+                                    />
+                                </TouchableOpacity>
+                                )}
+                                keyExtractor={(item, index) => index.toString()}
+                                numColumns={4} // Ensures 4 images per row
+                                contentContainerStyle={styles.gridContainer}
+                            />
+                        </ScrollView>
+                                                        
                               <Text style={styles.poweredbyGif}>Powered by GIFY</Text>
                         {/* Send Button */}
                             <TouchableOpacity style={styles.gifSendButton}>
@@ -296,13 +394,6 @@ const ChatDetailScreen = () => {
                             </TouchableOpacity>
                     </ScrollView>
           )}
-
-          {/* Footer with Go Back Button */}
-          {/* <View style={styles.bottomContainer}>
-            <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
-              <Text style={styles.goBackText}>Go Back</Text>
-            </TouchableOpacity>
-          </View> */}
         </View>
       </ModalWrapper>
                                     </View>
@@ -609,8 +700,8 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   modalContent: {
-    backgroundColor: "#000",
-    padding: 10,
+    backgroundColor: "#000000",
+    padding: 5,
   },
   tabsContainer: {
     flexDirection: "row",
@@ -726,5 +817,74 @@ poweredbyGif: {
   fontSize: 8,
   fontWeight: "500",
   textAlign: "center",
-},
+    },
+ searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#202325",  // Gray background
+    borderRadius: 8,
+     paddingHorizontal: 10,
+    marginHorizontal: 20,
+    height: 36,
+    marginVertical: 10,
+  },
+
+  searchIcon: {
+    marginRight: 10,  // Space between icon and text input
+  },
+
+  searchInput: {
+    flex: 1,  // Makes input take remaining space
+    fontSize: 16,
+    color: "#979C9E", // White text color
+    },
+  scrollContainer: {
+      maxHeight: 150,
+    //   margin: 20
+  },
+  gridContainer: {
+    justifyContent: "center",
+    paddingHorizontal: 5,
+  },
+  gifImages: {
+    width: 75, // Adjust width based on available space
+    height: 75, // Keep images square
+    margin: 5, // Space between images
+    borderRadius: 8,
+    },
+   selectedImage: {
+       borderColor: "#B976FF", // Red border when selected
+       borderWidth: 3
+    },
+   imageContainer: {
+    flexDirection: "row", // Places items in a row
+    alignItems: "center", // Aligns items vertically
+    // justifyContent: "space-between", // Adds space between items
+    gap: 10, // Space between items
+  },
+   cameraRollContainer: {
+    padding: 10,
+  },
+  emptyBox: {
+    width: 100,
+    height: 100,
+    borderWidth: 2,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  emptyBoxText: {
+    fontSize: 24,
+    color: "#888",
+  },
+  capturedImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+  },
+ 
+ 
+ 
 });
