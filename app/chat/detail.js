@@ -1,7 +1,7 @@
 import React,  { useRef, useState, useEffect } from "react";
-import { KeyboardAvoidingView, Platform, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, TextInput, Alert, Modal,FlatList } from "react-native";
+import { KeyboardAvoidingView, Platform, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, TextInput, Alert, Modal,FlatList, TouchableWithoutFeedback  } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { useRouter } from "expo-router"; // Assuming you are using expo-router
+import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons"; // For icons
 import FilledFootStamp from '../../assets/images/filledFootStamp.png';
 import OutlineFootStamp from '../../assets/images/outlineFootStamp.png';
@@ -11,8 +11,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { launchCamera } from "react-native-image-picker";
 import { Camera } from "expo-camera";
 import ModalWrapper from "react-native-modal";
-
-
+import { useNavigation } from '@react-navigation/native';
 
 const ChatDetailScreen = () => {
     const [selectedImage, setSelectedImage] = useState(null);
@@ -22,15 +21,28 @@ const ChatDetailScreen = () => {
     const [disappearingPhotosCount, setDisappearingPhotosCount] = useState(5);  
     const [capturedImage, setCapturedImage] = useState(null);
     const [hasPermission, setHasPermission] = useState(null);
-
+    const [flagModalVisible, setFlagModalVisible] = useState(false); // State to manage modal visibility
+      const [blockUserModalVisible, setBlockUserModalVisible] = useState(false);
 
     const router = useRouter();
+
+  const handleOpenFlagModal = () => {
+    setFlagModalVisible(true); 
+  };
+
+    
+  const handleCloseFlagModal = () => {
+    setFlagModalVisible(false); // Close modal
+  };
+
+      const navigation = useNavigation();
+
+
     const scrollViewRef = useRef();  
 
   const handleImagePress = (index) => {
     setSelectedImage(index); // Set the selected image index
   };
-
 
    useEffect(() => {
         (async () => {
@@ -128,17 +140,28 @@ const ChatDetailScreen = () => {
         </TouchableOpacity>
 
         {/* Profile Section (Centered) */}
-        <View style={styles.profileContainer}>
-          <View style={styles.onlineDot} />
-          <Image source={require("../../assets/images/user1Dp.png")} style={styles.profilePicture} />
-          <View style={styles.usernameContainer}>
-            <Text style={styles.username}>John Doe</Text>
-            <Text style={styles.verifiedBadge}>✔</Text>
-          </View>
-        </View>
+                <View style={styles.profileContainer}>
+            {/* Online Status Dot */}
+            <View style={styles.onlineDot} />
+
+            {/* Clickable Profile Image */}
+                  <TouchableOpacity onPress={() => {
+                      router.push('/chat/userProfilePage')
+                  }} >
+                <Image source={require("../../assets/images/user1Dp.png")} style={styles.profilePicture} />
+            </TouchableOpacity>
+
+            {/* Username & Verified Badge */}
+            <View style={styles.usernameContainer}>
+                <Text style={styles.username}>John Doe</Text>
+                <Text style={styles.verifiedBadge}>✔</Text>
+            </View>
+            </View>
 
         {/* White Flag */}
+       <TouchableOpacity onPress={handleOpenFlagModal}>
         <Ionicons name="flag" size={24} color="white" />
+      </TouchableOpacity>
       </View>
 
           {/* Chat Messages */}
@@ -325,14 +348,14 @@ const ChatDetailScreen = () => {
                     <View style={styles.imageContainer}>
                         {/* Empty Box or Captured Image */}
                        <TouchableOpacity style={styles.emptyBox} onPress={() => {
-    console.log("Empty box clicked");
-    openCamera();
-}}>
+                                console.log("Empty box clicked");
+                                openCamera();
+                            }}>
                            {capturedImage ? (
-        <Image source={capturedImage} style={styles.capturedImage} />
-    ) : (
-        <Text style={styles.emptyBoxText}>+</Text>
-    )}
+                                <Image source={capturedImage} style={styles.capturedImage} />
+                            ) : (
+                                <Text style={styles.emptyBoxText}>+</Text>
+                            )}
                         </TouchableOpacity>
 
                         {/* Default Vault Image */}
@@ -340,11 +363,11 @@ const ChatDetailScreen = () => {
                     </View>
 
       {/* Disappearing Photo Text */}
-      <View style={styles.disappearingPhotoBox}>
+      {/* <View style={styles.disappearingPhotoBox}>
         <Text style={styles.disappearingPhotoText}>
           Disappearing Photo {"\n"} 0/5 Available - Watch Ad to Refresh
         </Text>
-      </View>
+      </View> */}
 
       {/* Send Button */}
       <TouchableOpacity style={styles.sendButton}>
@@ -352,11 +375,11 @@ const ChatDetailScreen = () => {
       </TouchableOpacity>
     </ScrollView>
                             
-          )}
+                             )}
 
           {/* Content for GIFs */}
                           {selectedTab === "GIF" && (
-                              <ScrollView style={styles.gifContainer}>
+                              <View style={styles.gifContainer}>
                                   {/* Display only the default VaultImage */}
                                   <View style={styles.searchContainer}>
                                       {/* Search Icon */}
@@ -392,12 +415,88 @@ const ChatDetailScreen = () => {
                             <TouchableOpacity style={styles.gifSendButton}>
                                 <Text style={styles.sendButtonText}>Send</Text>
                             </TouchableOpacity>
-                    </ScrollView>
+                    </View>
           )}
         </View>
       </ModalWrapper>
                                     </View>
           </KeyboardAvoidingView>
+
+          {/* Flag Modal */}
+             <Modal
+        animationType="slide"
+        transparent={true}
+        visible={flagModalVisible}
+        onRequestClose={handleCloseFlagModal}
+      >
+        <View style={styles.flagModalOverlay}>
+          <View style={styles.flagModalContent}>
+            {/* Flag Buttons */}
+            <View style={styles.flagModalButtonRow}>
+              <TouchableOpacity style={styles.flagModalButton}  onPress={() => {
+                    router.push('/chat/reportUserPage');
+                    setFlagModalVisible(false);
+                    }}>
+                <Text style={styles.flagModalButtonText}>Report</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.flagModalButtonRow}>
+                          <TouchableOpacity style={styles.flagModalButton}   onPress={() => { setBlockUserModalVisible(true); setFlagModalVisible(false); }}>
+                <Text style={styles.flagModalButtonText}>Block</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.flagModalButtonRow}>
+                <TouchableOpacity style={styles.flagModalButton}  onPress={handleCloseFlagModal}>
+                    <Text style={styles.flagModalCloseButtonText}>Cancel</Text>
+                </TouchableOpacity>
+            </View>
+            {/* Close Modal Button */}
+            {/* <TouchableOpacity onPress={handleCloseFlagModal} style={styles.flagModalCloseButton}>
+              <Text style={styles.flagModalCloseButtonText}>Close</Text>
+            </TouchableOpacity> */}
+          </View>
+        </View>
+          </Modal>
+         
+          {/* bottom block modal Modal */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={blockUserModalVisible}
+            onRequestClose={() => setBlockUserModalVisible(false)}
+            >
+            <TouchableWithoutFeedback onPress={() => setBlockUserModalVisible(false)}>
+            <View style={styles.blockUserModalOverlay}>
+                <TouchableWithoutFeedback>
+                <View style={styles.blockUserModalContainer}>
+                    {/* Header */}
+                    <Text style={styles.blockUserModalHeader}>Are you sure?</Text>
+
+                    {/* Instructions */}
+                <Text style={styles.blockUserModalText}>
+                        Blocking this user will count as{' '}
+                        <Text style={styles.blockUserModalHighlight}>7</Text> of the{' '}
+                        <Text style={styles.blockUserModalHighlight}>10</Text> Free users receive. To get unlimited blocks, upgrade to{' '}
+                        <Text style={styles.blockUserModalHighlight}>Purr+</Text>.
+                        </Text>
+
+
+                    {/* Continue Button */}
+                              <TouchableOpacity 
+                                  onPress={() => {
+                    router.push('/chat');
+                    setBlockUserModalVisible(false);
+                    }}
+                    style={styles.blockUserModalContinueButton} 
+                    >
+                    <Text style={styles.blockUserModalContinueButtonText}>Continue</Text>
+                    </TouchableOpacity>
+                </View>
+                </TouchableWithoutFeedback>
+            </View>
+            </TouchableWithoutFeedback>
+        </Modal>
     </View>
   );
 };
@@ -883,8 +982,110 @@ poweredbyGif: {
     width: "100%",
     height: "100%",
     borderRadius: 10,
+    },
+
+  flagModalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
- 
- 
- 
+  flagModalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Overlay color
+  },
+  flagModalContent: {
+    width: '100%',
+    backgroundColor: '#202325',
+    // padding: 20,
+  },
+  flagModalButtonRow: {
+    flexDirection: 'row',
+    //   marginBottom: 1,
+      width: '100%',
+    height:50
+  },
+  flagModalButton: {
+    backgroundColor: '#1C1C1E',
+    padding: 10,
+    // borderRadius: 5,
+    flex: 1,
+    marginHorizontal: 5,
+      alignItems: 'center',
+      borderBottomLeftRadius:10,
+      borderBottomRightRadius:10
+  },
+  flagModalButtonText: {
+    color: '#E71E1E',
+    fontSize: 17,
+  },
+  flagModalCloseButton: {
+    marginTop: 20,
+    backgroundColor: '#FF6347',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  flagModalCloseButtonText: {
+    color: 'white',
+      fontSize: 17,
+    fontWeight:'900'
+    },
+  
+  blockUserModalButtonRow: {
+    marginTop: 20,
+  },
+  blockUserModalButton: {
+    backgroundColor: '#B976FF',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  blockUserModalButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  blockUserModalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
+  },
+  blockUserModalContainer: {
+    backgroundColor: '#202325',
+    padding: 10,
+    alignItems: 'center',
+    paddingBottom: 40,
+  },
+  blockUserModalHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 10,
+  },
+  blockUserModalText: {
+    fontSize: 16,
+    color: '#ccc',
+    textAlign: 'center',
+      marginBottom: 20,
+    paddingHorizontal:20
+  },
+  blockUserModalContinueButton: {
+    backgroundColor: '#B976FF',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '100%',
+  },
+  blockUserModalContinueButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    },
+  blockUserModalHighlight: {
+  color: '#B976FF', // Purple color
+  fontWeight: 'bold',
+},
+
 });
