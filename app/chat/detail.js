@@ -1,25 +1,730 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React,  { useRef, useState } from "react";
+import { KeyboardAvoidingView, Platform, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, TextInput, Alert, Modal, } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { useRouter } from "expo-router"; // Assuming you are using expo-router
+import { Ionicons } from "@expo/vector-icons"; // For icons
+import FilledFootStamp from '../../assets/images/filledFootStamp.png';
+import OutlineFootStamp from '../../assets/images/outlineFootStamp.png';
+import VaultImage from '../../assets/images/vaultImage.png';
+import * as ImagePicker from 'expo-image-picker';
+import ModalWrapper from "react-native-modal";
+
+
 
 const ChatDetailScreen = () => {
-    return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Chat Detail Screen</Text>
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedTab, setSelectedTab] = useState("Vault");
+  const [vaultImages, setVaultImages] = useState(["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg"]);
+  const [disappearingPhotosCount, setDisappearingPhotosCount] = useState(5);  // You can set this dynamically
+
+    const router = useRouter();
+    const scrollViewRef = useRef();  
+
+// Opens modal
+  const openAttachmentModal = () => {
+    setModalVisible(true);
+  };
+
+  // Closes modal properly
+  const handleGoBack = () => {
+    setModalVisible(false);
+    };
+    
+
+    const handleImagePick = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setSelectedImage(result.uri);
+      setModalVisible(true);
+    }
+  };
+
+  const handleTabChange = (tab) => {
+    setSelectedTab(tab);
+  };
+
+//   const handleGoBack = () => {
+//     setModalVisible(false);
+//   };
+
+  return (
+    <View style={styles.container}>
+      <StatusBar backgroundColor="#202325" barStyle="light-content" />
+
+      {/* Header Section */}
+      <View style={styles.header}>
+        {/* Back Button */}
+        <TouchableOpacity onPress={() => router.back()}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+
+        {/* Profile Section (Centered) */}
+        <View style={styles.profileContainer}>
+          <View style={styles.onlineDot} />
+          <Image source={require("../../assets/images/user1Dp.png")} style={styles.profilePicture} />
+          <View style={styles.usernameContainer}>
+            <Text style={styles.username}>John Doe</Text>
+            <Text style={styles.verifiedBadge}>✔</Text>
+          </View>
         </View>
-    );
+
+        {/* White Flag */}
+        <Ionicons name="flag" size={24} color="white" />
+      </View>
+
+          {/* Chat Messages */}
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.container}
+        >
+                <ScrollView  contentContainerStyle={styles.chatContainer}
+                    ref={scrollViewRef}
+                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}>
+                    {/* Sender Message (Right) */}
+                    <View style={styles.senderWrapper}>
+                        <View style={styles.senderMessage}>
+                            <Text style={styles.messageText}>Yes! I’ll be there at 8 PM.</Text>
+                            <View style={styles.senderTail} />
+                        </View>
+                        <Text style={styles.sendertTmestamp}>12:35 PM</Text>
+                    </View>
+                                {/* Receiver Message (Left) */}
+                    <View style={styles.receiverWrapper}>
+                            <View style={styles.receiverMessage}>
+                                <Text style={styles.messageText}>Hey! Are you coming tonight?</Text>
+                                <View style={styles.receiverTail} />
+                            </View>
+                            <Text style={styles.recieverTimestamp}>12:30 PM</Text>
+                        </View>
+                        {/* Failed to Send Sender Message (Right) */}
+                            <View style={styles.failedSenderWrapper}>
+                            <View style={styles.failedSenderMessage}>
+                                <Text style={styles.messageText}>Oops! Looks like my message didn't go through.</Text>
+                                <View style={styles.failedSenderTail} />
+                            </View>
+                            <Text style={styles.failedSenderTimestamp}>Error</Text>
+                        </View>
+                        
+                        {/* Receiver Message (Left) */}
+                    <View style={styles.receiverWrapper}>
+                            <View style={styles.receiverMessage}>
+                                <Text style={styles.messageText}>Hey! Are you coming tonight?</Text>
+                                <View style={styles.receiverTail} />
+                            </View>
+                            <Text style={styles.recieverTimestamp}>12:30 PM</Text>
+                        </View>
+                        {/* Failed to Send Sender Message (Right) */}
+                            <View style={styles.failedSenderWrapper}>
+                            <View style={styles.failedSenderMessage}>
+                                <Text style={styles.messageText}>Oops! Looks like my message didn't go through.</Text>
+                                <View style={styles.failedSenderTail} />
+                            </View>
+                            <Text style={styles.failedSenderTimestamp}>Error</Text>
+                            </View>
+
+                        {/* Receiver Message (Left) */}
+                    <View style={styles.receiverWrapper}>
+                            <View style={styles.receiverMessage}>
+                                <Text style={styles.messageText}>Hey! Are you coming tonight?</Text>
+                                <View style={styles.receiverTail} />
+                            </View>
+                            <Text style={styles.recieverTimestamp}>12:30 PM</Text>
+                        </View>
+                        {/* Failed to Send Sender Message (Right) */}
+                            <View style={styles.failedSenderWrapper}>
+                            <View style={styles.failedSenderMessage}>
+                                <Text style={styles.messageText}>Oops! Looks like my message didn't go through.</Text>
+                                <View style={styles.failedSenderTail} />
+                            </View>
+                            <Text style={styles.failedSenderTimestamp}>Error</Text>
+                            </View>
+                        {/* Failed to Send Receiver Message (Left) */}
+                        <View style={styles.failedReceiverWrapper}>
+                        <View style={styles.failedReceiverMessage}>
+                            <Text style={styles.failedRecieverMessageText}>I didn't get your message, could you resend?</Text>
+                                <Ionicons name="warning" size={16} color="red" style={styles.failedIcon} />
+                        </View>
+                        <Text style={styles.failedRecieverTimestamp}>12:55 PM</Text>
+                        </View>
+
+                        {/* Receiver Message (Left) */}
+                    <View style={styles.receiverWrapper}>
+                            <View style={styles.receiverMessage}>
+                                <Text style={styles.messageText}>Hey! Are you coming tonight?</Text>
+                                <View style={styles.receiverTail} />
+                            </View>
+                            <Text style={styles.recieverTimestamp}>12:30 PM</Text>
+                        </View>
+                        {/* Failed to Send Sender Message (Right) */}
+                            <View style={styles.failedSenderWrapper}>
+                            <View style={styles.failedSenderMessage}>
+                                <Text style={styles.messageText}>Oops! Looks like my message didn't go through.</Text>
+                                <View style={styles.failedSenderTail} />
+                            </View>
+                            <Text style={styles.failedSenderTimestamp}>Error</Text>
+                            </View>
+                                    {/* Sender Message with Filled Foot Stamp */}
+                            <View style={styles.filledFootSenderContainer}>
+                                <View style={styles.filledFootSenderWrapper}>
+                                                {/* Foot Stamp Image on the Extreme Left */}
+                                                <View>
+                                                <Image source={FilledFootStamp} style={styles.filledFootStamp} />   
+                                                </View>
+                                    
+
+                                    {/* Sender Message Box on the Right */}
+                                    <View style={styles.filledFootSenderMessage}>
+                                        <Text style={styles.filledMessageText}>I’ll sesssssssssnd you the details shortly.</Text>
+                                    </View>
+                                </View>
+
+                                {/* Timestamp Below Everything */}
+                                <Text style={styles.filledTimestamp}>12:4S0 PM</Text>
+                            </View>
+                            {/* Receiver Message with Outline Foot Stamp */}
+                            <View style={styles.outlineFootReceiverWrapper}>
+                            <View style={styles.outlineFootReceiverMessage}>
+                                <Text style={styles.messageText}>Alright, I’ll be waiting.</Text>
+                                <Image
+                                        source={OutlineFootStamp}
+                                        style={styles.outlineFootStamp}
+                                    />
+                                {/* <Ionicons name="checkmark-circle-outline" size={16} color="white" style={styles.outlineFootStamp} /> */}
+                            </View>
+                            <Text style={styles.timestamp}>12:42 PM</Text>
+                        </View>
+                        
+                           
+
+              </ScrollView>
+              <View style={styles.inputContainer}>
+                  {/* Clickable Icon on the Left */}
+                  <TouchableOpacity onPress={openAttachmentModal} >
+                      <Image source={require("../../assets/images/attach.png")} style={styles.icon}  />
+                  </TouchableOpacity>
+                            
+
+                            {/* Text Input */}
+                            <TextInput 
+                                style={styles.textInput} 
+                                placeholder="Type something here..." 
+                                placeholderTextColor="#999"
+                                multiline={true}
+                            />
+
+                            {/* Send Button on the Right */}
+                            <TouchableOpacity>
+                                <Ionicons name="send" size={25} color="white" style={styles.sendIcon} />
+                  </TouchableOpacity>
+                  
+                 {/* Modal for Attachments */}
+      <ModalWrapper isVisible={isModalVisible} onBackdropPress={() => setModalVisible(false)} style={styles.modal}>
+        <View style={styles.modalContent}>
+          {/* Tabs */}
+          <View style={styles.tabsContainer}>
+            {["Vault", "Camera Roll", "GIF"].map((tab) => (
+              <TouchableOpacity key={tab} style={[styles.tab, selectedTab === tab && styles.activeTab]} onPress={() => setSelectedTab(tab)}>
+                <Text style={styles.tabText}>{tab}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+                    {selectedTab === "Vault" && (
+                    <ScrollView style={styles.vaultContainer}>
+                        {/* Display only the default VaultImage */}
+                        <Image source={VaultImage} style={styles.vaultImage} />
+                        
+                        {/* Disappearing Photo Count Box */}
+                        <View style={styles.disappearingPhotoBox}>
+                        <Text style={styles.disappearingPhotoText}>
+                            Disappearing Photo {"\n"}  0/5 Available - Watch Ad to Refresh
+                        </Text>
+                        </View>
+                        
+                        {/* Send Button */}
+                            <TouchableOpacity style={styles.sendButton}>
+                                <Text style={styles.sendButtonText}>Send</Text>
+                            </TouchableOpacity>
+                    </ScrollView>
+                    )}
+
+          {/* Content for Camera Roll */}
+                          {selectedTab === "Camera Roll" && (
+                              
+                    <ScrollView style={styles.cameraRollContainer}>
+                        {/* Display only the default VaultImage */}
+                        <Image source={VaultImage} style={styles.vaultImage} />
+                        
+                        {/* Disappearing photo text */}
+                         <View style={styles.disappearingPhotoBox}>
+                        <Text style={styles.disappearingPhotoText}>
+                            Disappearing Photo {"\n"}  0/5 Available - Watch Ad to Refresh
+                        </Text>
+                        </View>
+                        
+                        {/* Send Button */}
+                            <TouchableOpacity style={styles.sendButton}>
+                                <Text style={styles.sendButtonText}>Send</Text>
+                            </TouchableOpacity>
+                    </ScrollView>
+                            
+          )}
+
+          {/* Content for GIFs */}
+                          {selectedTab === "GIF" && (
+                              <ScrollView style={styles.gifContainer}>
+                        {/* Display only the default VaultImage */}
+                        <Image source={VaultImage} style={styles.vaultImage} />
+                        
+                        {/* Disappearing photo text */}
+                        
+                                  
+                                
+                              <Text style={styles.poweredbyGif}>Powered by GIFY</Text>
+                        {/* Send Button */}
+                            <TouchableOpacity style={styles.gifSendButton}>
+                                <Text style={styles.sendButtonText}>Send</Text>
+                            </TouchableOpacity>
+                    </ScrollView>
+          )}
+
+          {/* Footer with Go Back Button */}
+          {/* <View style={styles.bottomContainer}>
+            <TouchableOpacity style={styles.goBackButton} onPress={handleGoBack}>
+              <Text style={styles.goBackText}>Go Back</Text>
+            </TouchableOpacity>
+          </View> */}
+        </View>
+      </ModalWrapper>
+                                    </View>
+          </KeyboardAvoidingView>
+    </View>
+  );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-    },
-    text: {
-        fontSize: 18,
-        color: '#333',
-    },
-});
-
 export default ChatDetailScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+
+  /*** HEADER STYLES ***/
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#202325",
+    paddingVertical: 12,
+      paddingHorizontal: 15,
+    marginTop: 40
+  },
+  profileContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  onlineDot: {
+    width: 10,
+    height: 10,
+    backgroundColor: "green",
+    borderRadius: 5,
+    marginRight: 5,
+  },
+  profilePicture: {
+    width: 35,
+    height: 35,
+    borderRadius: 5,
+    marginRight: 8,
+  },
+  usernameContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  username: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  verifiedBadge: {
+    color: "#00BFFF",
+    fontSize: 14,
+    marginLeft: 3,
+  },
+
+  /*** CHAT MESSAGES ***/
+  chatContainer: {
+    flexGrow: 1,
+    padding: 15,
+    paddingBottom: 80,
+  },
+
+   /*** RECEIVER MESSAGE (LEFT) ***/
+ receiverWrapper: {
+    flexDirection: "column", // Stack items vertically
+    alignSelf: "flex-start",
+    // marginBottom: 2,
+  },
+  receiverMessage: {
+    backgroundColor: "#303437",
+    padding: 10,
+    borderRadius: 8,
+    borderBottomLeftRadius: 0, // Sharp top-left corner
+    maxWidth: "70%",
+    position: "relative",
+  },
+   receiverTail: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 10,
+    borderLeftColor: "transparent",
+    borderRightWidth: 10,
+    borderRightColor: "#303437", // Same as receiver bubble color
+    borderTopWidth: 10,
+    borderTopColor: "transparent",
+    position: "absolute",
+    bottom: 0,
+    left: -20, // Ensures tail is at the bottom-left
+  },
+
+  /*** SENDER MESSAGE (RIGHT) ***/
+  senderWrapper: {
+    flexDirection: "column", // Stack message and timestamp vertically
+    alignSelf: "flex-end",
+    marginBottom: 10,
+  },
+  senderMessage: {
+    backgroundColor: "#B976FF",
+    padding: 10,
+    borderRadius: 8,
+    borderBottomRightRadius: 0, // Sharp top-right corner
+    maxWidth: "70%",
+    position: "relative",
+  },
+
+  senderTail: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 10,
+    borderLeftColor: "#B976FF", // Same as sender bubble color
+    borderRightWidth: 10,
+    borderRightColor: "transparent",
+    borderTopWidth: 10,
+    borderTopColor: "transparent",
+    position: "absolute",
+    bottom: 0,
+    right: -20, // Ensures tail is at the bottom-right
+  },
+
+  /*** COMMON MESSAGE TEXT & TIMESTAMP ***/
+  messageText: {
+    color: "white",
+    fontSize: 16,
+    },
+   failedRecieverMessageText: {
+    color: "#6d6f70",
+    fontSize: 16,
+  },
+  recieverTimestamp: {
+    fontSize: 12,
+    color: "#979C9E",
+    alignSelf: "flex-start",
+    },
+  sendertTmestamp: {
+    fontSize: 12,
+    color: "#979C9E",
+    alignSelf: "flex-end",
+    },
+  
+   /*** FAILED RECEIVER MESSAGE (LEFT) ***/
+  failedReceiverWrapper: {
+    flexDirection: "column",
+    alignSelf: "flex-start",
+  },
+  failedReceiverMessage: {
+    backgroundColor: "#202325",
+    padding: 10,
+    borderRadius: 8,
+    borderBottomLeftRadius: 0,
+    maxWidth: "70%",
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  failedIcon: {
+    marginLeft: 100, // Adds spacing between text and error icon
+  },
+
+  /*** FAILED SENDER MESSAGE (RIGHT) ***/
+  failedSenderWrapper: {
+    flexDirection: "column",
+    alignSelf: "flex-end",
+    marginBottom: 10,
+  },
+  failedSenderMessage: {
+    backgroundColor: "#2F1947",
+    padding: 10,
+    borderRadius: 8,
+    borderBottomRightRadius: 0,
+    maxWidth: "70%",
+    position: "relative",
+    },
+    failedSenderTail: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 10,
+    borderLeftColor: "#2F1947", // Same as sender bubble color
+    borderRightWidth: 10,
+    borderRightColor: "transparent",
+    borderTopWidth: 10,
+    borderTopColor: "transparent",
+    position: "absolute",
+    bottom: 0,
+    right: -20, // Ensures tail is at the bottom-right
+  },
+
+  /*** COMMON FAILED TIMESTAMP ***/
+  failedSenderTimestamp: {
+    fontSize: 12,
+    color: "#979C9E",
+    alignSelf: "flex-end",
+    },
+   failedRecieverTimestamp: {
+    fontSize: 12,
+    color: "#979C9E",
+    alignSelf: "flex-start",
+    },
+   
+   /*** Container to keep timestamp below the row ***/
+  filledFootSenderContainer: {
+    // alignSelf: "flex-end",
+    marginBottom: 10,
+  },
+
+  /*** Wrapper to align image and message in a row ***/
+  filledFootSenderWrapper: {
+    flexDirection: "row", 
+      alignItems: "center", 
+    alignSelf: "flex-end",
+  },
+
+  /*** Foot Stamp Image on the Left ***/
+  filledFootStamp: {
+    // width: 20, // Adjust image size as needed
+    // height: 20,
+      alignSelf: "center", 
+      marginRight: 70,
+  },
+
+  /*** Message Box on the Right ***/
+  filledFootSenderMessage: {
+    backgroundColor: "#B976FF",
+    padding: 10,
+    borderRadius: 8,
+    borderBottomRightRadius: 0,
+    maxWidth: "70%",
+    flex: 1,
+    alignSelf: "flex-end", 
+  },
+
+  /*** Message Text ***/
+  filledMessageText: {
+    color: "white",
+    fontSize: 16,
+  },
+
+  /*** Timestamp Below Everything ***/
+  filledTimestamp: {
+    fontSize: 12,
+    color: "#979C9E",
+    alignSelf: "flex-end", 
+    marginTop: 2,
+  },
+
+  /*** RECEIVER MESSAGE WITH OUTLINE FOOT STAMP (LEFT) ***/
+  outlineFootReceiverWrapper: {
+    flexDirection: "column",
+    alignSelf: "flex-start",
+  },
+  outlineFootReceiverMessage: {
+    backgroundColor: "#303437",
+    padding: 10,
+    borderRadius: 8,
+    borderBottomLeftRadius: 0,
+    maxWidth: "70%",
+    position: "relative",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  outlineFootStamp: {
+    marginLeft: 150, 
+    },
+  
+   /*** Input row stays at the bottom ***/
+  inputContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#000000",
+    padding: 10,
+  },
+
+  /*** Icon/Image on the Left ***/
+  icon: {
+    width: 24, // Adjust size as needed
+    height: 24,
+    marginRight: 10, // Space between icon and text input
+  },
+
+  /*** Text Input ***/
+  textInput: {
+    flex: 1, // Ensures it expands to take available space
+    fontSize: 16,
+    paddingVertical: 8,
+    backgroundColor: '#202325',
+    borderRadius: 10,
+    height: 46,
+    color: '#fff',
+    padding: 15,
+    multiline: true,  // Allows multiple lines
+    textAlignVertical: 'center', // Aligns text properly when multiline
+  },
+    sendIcon: {
+    marginLeft: 8,
+    },
+    modal: {
+    justifyContent: "flex-end",
+    margin: 0,
+  },
+  modalContent: {
+    backgroundColor: "#000",
+    padding: 10,
+  },
+  tabsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 2,
+      backgroundColor: '#202325',
+      textAlign: 'center',
+      borderRadius: 8,
+  },
+  tab: {
+    padding: 10,
+    width: '33.333%',
+    alignItems: 'center', 
+    justifyContent: 'center',  
+    textAlign: 'center',  
+},
+  activeTab: {
+    backgroundColor: "#303437",
+      borderRadius: 6,
+      margin: 2
+  },
+  tabText: {
+    fontSize: 12,
+      color: "#ffffff",
+    fontWeight:'500'
+  },
+  vaultContainer: {
+    marginBottom: 20,
+  },
+  vaultImage: {
+    // width: 100,
+    // height: 100,
+    margin: 5,
+    // resizeMode: "cover",
+  },
+  vaultInfo: {
+    marginTop: 10,
+    alignItems: "center",
+  },
+  vaultText: {
+    fontSize: 14,
+    color: "red",
+  },
+  cameraRollContainer: {
+    marginBottom: 20,
+    },
+  selectedImage: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
+  },
+  gifContainer: {
+    marginBottom: 20,
+  },
+  gifText: {
+    fontSize: 16,
+    color: "#000",
+  },
+  bottomContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  goBackButton: {
+    padding: 10,
+    backgroundColor: "#4CAF50",
+    borderRadius: 5,
+  },
+  goBackText: {
+    color: "#fff",
+    fontSize: 16,
+    },
+  disappearingPhotoBox: {
+  borderWidth: 2,
+  borderColor: "#B976FF",
+      paddingVertical: 8,
+  paddingHorizontal: 8,
+  borderRadius: 48,
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: 5,
+  alignSelf: "center", // Centers the box horizontally
+},
+disappearingPhotoText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "500",
+  textAlign: "center",
+    },
+sendButton: {
+  backgroundColor: "#B976FF", // Filled button color
+  paddingVertical: 10,
+  marginHorizontal: 30,
+    borderRadius: 48,
+  marginTop:10
+    },
+gifSendButton: {
+  backgroundColor: "#B976FF", // Filled button color
+  paddingVertical: 10,
+  marginHorizontal: 30,
+    borderRadius: 48,
+  marginTop:1
+},
+
+sendButtonText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "bold",
+  textAlign: "center",
+    },
+poweredbyGif: {
+  color: "#979C9E",
+  fontSize: 8,
+  fontWeight: "500",
+  textAlign: "center",
+},
+});
