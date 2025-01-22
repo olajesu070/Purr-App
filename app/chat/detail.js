@@ -423,7 +423,7 @@ const ChatDetailScreen = () => {
           </KeyboardAvoidingView>
 
           {/* Flag Modal */}
-             <Modal
+    <Modal
         animationType="slide"
         transparent={true}
         visible={flagModalVisible}
@@ -983,7 +983,6 @@ poweredbyGif: {
     height: "100%",
     borderRadius: 10,
     },
-
   flagModalContainer: {
     flex: 1,
     justifyContent: 'center',

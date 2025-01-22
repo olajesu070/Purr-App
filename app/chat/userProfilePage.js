@@ -12,6 +12,9 @@ import {
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import UserProfileImage from '../../assets/images/userProfileImage.png';
+import UserProfileChat from '../../assets/images/userProfileChat.png';
+import UserProfileFootstamp from '../../assets/images/userProfileFootstamp.png';
+import GoogleAdsImage from '../../assets/images/googleAds.png';
 
 
 
@@ -22,9 +25,19 @@ const UserProfilePage = ({ navigation }) => {
   const [flagModalVisible, setFlagModalVisible] = useState(false);
   const [blockUserModalVisible, setBlockUserModalVisible] = useState(false);
   const router = useRouter();
-
   const handleOpenFlagModal = () => setFlagModalVisible(true);
   const handleCloseFlagModal = () => setFlagModalVisible(false);
+
+    
+    // Reusable UserTag Component
+    const UserTag = ({ text }) => {
+      return (
+        <View style={styles.userTag}>
+          <Text style={styles.tagText}>{text}</Text>
+        </View>
+      );
+    };
+
 
   return (
     <View style={styles.container}>
@@ -53,83 +66,163 @@ const UserProfilePage = ({ navigation }) => {
         <Modal visible={isFullScreen} transparent>
           <TouchableOpacity style={styles.fullScreenContainer} onPress={() => setIsFullScreen(false)}>
             <Image
-              source={{ uri: "https://via.placeholder.com/150" }}
+               source={UserProfileImage}
               style={styles.fullScreenImage}
             />
           </TouchableOpacity>
         </Modal>
 
         {/* Purple Line */}
-        <View style={styles.purpleLine} />
+        <View style={styles.lineContainer}>
+            <View style={styles.grayLine} />
+            <View style={styles.purpleLine} />
+            <View style={styles.grayLine} />
+        </View>
+
 
         {/* User Info Row */}
         <View style={styles.userInfoRow}>
           <View style={styles.userInfoLeft}>
             <View style={styles.onlineBadge} />
-            <Text style={styles.username}>JohnDoe</Text>
+            <Text style={styles.username}>Danielle,</Text>
             <Text style={styles.age}>25</Text>
           </View>
           <View style={styles.chatIcons}>
-            <TouchableOpacity>
-              <FontAwesome name="comment" size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.chatIconSpacing}>
-              <FontAwesome name="comments" size={24} color="white" />
-            </TouchableOpacity>
+                <TouchableOpacity>
+                        <Image
+                        source={UserProfileFootstamp}
+                        style={styles.userProfileImage}
+                        />
+                </TouchableOpacity>
+                      <TouchableOpacity style={styles.chatIconSpacing} onPress={() => router.back()}>
+                          <Image
+                                source={UserProfileChat}
+                                style={styles.userProfileImage}
+                            />
+                        </TouchableOpacity>
           </View>
         </View>
 
-        {/* User Tags */}
-        <View style={styles.userTag}>
-          <Text style={styles.tagText}>He / 2 miles away</Text>
+       <View style={styles.userTagContainer}>
+            <UserTag text="She/Her" />
+            <UserTag text="2 miles away" />
         </View>
+
+              
 
         {/* Tabs (About Me | Stats) */}
         <View style={styles.tabs}>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "about" && styles.activeTab]}
-            onPress={() => setActiveTab("about")}
-          >
-            <Text style={styles.tabText}>About Me</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tab, activeTab === "stats" && styles.activeTab]}
-            onPress={() => setActiveTab("stats")}
-          >
-            <Text style={styles.tabText}>Stats</Text>
-          </TouchableOpacity>
-        </View>
+      {/* About Me Tab */}
+      <TouchableOpacity
+        style={[styles.tab, activeTab === "about" && styles.activeTab]}
+        onPress={() => setActiveTab("about")}
+      >
+        <Text style={[styles.tabText, activeTab === "about" && styles.activeTabText]}>
+          About Me
+        </Text>
+      </TouchableOpacity>
+
+      {/* Stats Tab */}
+      <TouchableOpacity
+        style={[styles.tab, activeTab === "stats" && styles.activeTab]}
+        onPress={() => setActiveTab("stats")}
+                  >
+                      <View>
+                          <Text style={[styles.tabText, activeTab === "stats" && styles.activeTabText]}>
+                            Stats
+                            </Text>
+                      </View>
+        
+      </TouchableOpacity>
+    </View>
+
+              <View style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: 20 }}>
+        <Image source={GoogleAdsImage} style={styles.googleAdsImage} />
+    </View>
 
         {/* About Me Section */}
-        {activeTab === "about" && (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>About Me</Text>
+              {activeTab === "about" && (
+                  <View style={styles.sectionContainer}>
+                        <View>
+                            <Text style={styles.sectionLabel}>About</Text>
+                        </View>
+                        <View style={styles.section}>
+                            <Text style={styles.sectionContent}>
+                            I love traveling and meeting new people.
+                            </Text>
+                        </View>
+                    </View>
+                )}
+
+       {/* Stats Section */}
+       {activeTab === "stats" && (
+        <View style={styles.sectionContainer}>
+            {/* About Section */}
+            <View>
+            <Text style={styles.sectionLabel}>About</Text>
+            </View>
+            <View style={styles.section}>
             <Text style={styles.sectionContent}>
-              I love traveling and meeting new people.
+                I love traveling and meeting new people.
             </Text>
-          </View>
-        )}
+            </View>
 
-        {/* Stats Section */}
-        {activeTab === "stats" && (
-          <View style={styles.section}>
-            <Text style={styles.sectionLabel}>Stats</Text>
-            <Text style={styles.statLabel}>Height</Text>
-            <Text style={styles.statValue}>5'9"</Text>
+           {/* Tags Section */}
+<View style={styles.tagSection}>
+    <Text style={styles.tagTitle}>Height</Text>
+    <View style={styles.userTagContainer}>
+        <UserTag text="5’5”" />
+    </View>
 
-            <Text style={styles.statLabel}>Gender Identity</Text>
-            <Text style={styles.statValue}>Male</Text>
+    <Text style={styles.tagTitle}>Gender Identity</Text>
+    <View style={styles.userTagContainer}>
+        <UserTag text="Queer" />
+        <UserTag text="Woman" />
+    </View>
+                          
+                          <Text style={styles.tagTitle}>Sexual Identity</Text>
+    <View style={styles.userTagContainer}>
+        <UserTag text="Lesbian" />
+    </View>
+                          
+  <Text style={styles.tagTitle}>Prides</Text>
+    <View style={styles.userTagContainer}>
+        <UserTag text="Hey Mamas" />
+        <UserTag text="Lipstick" />
+    </View>
+                          
 
-            <Text style={styles.statLabel}>Relationship Status</Text>
-            <Text style={styles.statValue}>Single</Text>
+  <Text style={styles.tagTitle}>Relationship Status</Text>
+    <View style={styles.userTagContainer}>
+        <UserTag text="Single" />
+     </View>
+                          
 
-            <Text style={styles.statLabel}>Looking For</Text>
-            <Text style={styles.statValue}>Friends</Text>
-          </View>
+  <Text style={styles.tagTitle}>Position</Text>
+    <View style={styles.userTagContainer}>
+        <UserTag text="Pillow Princess" />
+                          </View>
+                          
+    <Text style={styles.tagTitle}>Prowling For</Text>
+    <View style={styles.userTagContainer}>
+        <UserTag text="Relationship" />
+        <UserTag text="Hookups" />
+        <UserTag text="Dates" />
+        </View>
+                          
+                          <Text style={styles.tagTitle}>Body Type</Text>
+    <View style={styles.userTagContainer}>
+        <UserTag text="Average" />
+    </View>
+                        
+                          
+
+</View>
+
+        </View>
         )}
       </ScrollView>
 
-      {/* Flag Modal */}
       {/* Flag Modal */}
                   <Modal
              animationType="slide"
@@ -220,14 +313,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 15,
-    marginTop: 40,
+      marginTop: 40,
   },
   profileImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 350,
+    height: 400,
     alignSelf: "center",
-    marginVertical: 20,
+      resizeMode: 'cover',
   },
   fullScreenContainer: {
     flex: 1,
@@ -239,13 +331,29 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     resizeMode: "contain",
+    },
+    userProfileImage: {
+    width: 20,
+    height: 20,
+    resizeMode: "contain",
+    },
+  
+  lineContainer: {
+    flexDirection: "row",
+    width: "30%", // Adjust width as needed
+    alignSelf: "center",
+    marginVertical: 20,
+    justifyContent: "center",
+  },
+  grayLine: {
+    height: 3,
+    backgroundColor: "#202325",
+    flex: 1, // Each section takes equal width
   },
   purpleLine: {
     height: 3,
     backgroundColor: "#B976FF",
-    width: "50%",
-    alignSelf: "center",
-    marginVertical: 20,
+    flex: 1, // The middle part has the same width as the others
   },
   userInfoRow: {
     flexDirection: "row",
@@ -286,41 +394,79 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: "center",
     marginVertical: 10,
-  },
+    },
+  
   tagText: {
     color: "white",
     fontSize: 14,
   },
-  tabs: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 20,
-  },
+ tabs: {
+  flexDirection: "row",
+  width: "98%",
+  marginTop: 10,
+  backgroundColor: "#202325",
+  alignSelf: "center", // Centers the tabs horizontally
+  justifyContent: "center", // Ensures content is centered inside
+  borderRadius: 8, // Optional: adds rounded corners
+//   paddingVertical: 5, 
+},
   tab: {
+    flex: 1, // Each tab takes up 50% of the width
     padding: 10,
-    marginHorizontal: 10,
+    alignItems: "center",
   },
   activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#B976FF",
+      backgroundColor: "#303437",
+      borderRadius: 6
+    
   },
   tabText: {
     color: "white",
     fontSize: 16,
   },
-  section: {
-    padding: 20,
+  activeTabText: {
+    fontWeight: "bold",
+    },
+  
+    googleAdsImage: {
+      backgroundColor:'red'
   },
+ section: {
+  backgroundColor: "#303437",
+  borderRadius: 10, // Rounded corners
+  padding: 12, 
+     marginTop: 10, 
+  marginHorizontal:5
+    },
+  sectionContainer: {
+  padding: 12, 
+     marginTop: 10, 
+//   marginHorizontal:15
+},
+
+sectionContent: {
+  fontSize: 16,
+  color: "white",
+},
+
   sectionLabel: {
     fontSize: 18,
-    color: "#B976FF",
+    color: "#ffffff",
     fontWeight: "bold",
   },
-  sectionContent: {
-    fontSize: 16,
-    color: "white",
-    marginTop: 5,
-  },
+//   sectionContent: {
+//     fontSize: 16,
+//     color: "white",
+//       marginTop: 5,
+//     backgroundColor:'#303437'
+    //   },
+  tagTitle: {
+  fontSize: 16,
+  fontWeight: "bold",
+      color: "white",
+  marginTop:8
+//   marginBottom: 8, // Space between title and tags
+},
   statLabel: {
     fontSize: 16,
     color: "#B976FF",
@@ -473,6 +619,23 @@ const styles = StyleSheet.create({
       fontSize: 17,
     fontWeight:'900'
     },
+  userTagContainer: {
+    flexDirection: "row", // Places tags in a row
+    gap: 5, // Space between tags
+    alignItems: "center",
+      alignSelf: "flex-start", // Centers the tags
+    marginTop: 5
+  },
+  userTag: {
+    backgroundColor: "#303437",
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15,
+  },
+  tagText: {
+    fontSize: 14,
+    color: "#fff",
+  },
 });
 
 export default UserProfilePage;
