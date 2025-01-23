@@ -26,6 +26,12 @@ import * as Progress from 'react-native-progress';
 import ThemedButton from '../../components/ThemedButton';
 import { Ionicons } from "@expo/vector-icons";
 
+import SubmitTicketImage from '../../assets/images/submitTicketImage.png';
+import MyprofileImage from '../../assets/images/myprofileImage.png';
+import SettingsImage from '../../assets/images/settingsImage.png';
+import { useRouter } from 'expo-router';
+
+
 
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState('Feed'); // Manage active tab state
@@ -38,6 +44,9 @@ export default function HomeScreen() {
   const [rightSidebarVisible, setRightSidebarVisible] = useState(false);
   const leftSidebarAnimation = useState(new Animated.Value(0))[0];
   const rightSidebarAnimation = useState(new Animated.Value(0))[0];
+
+  const router = useRouter();
+
   const [toggleStates, setToggleStates] = useState({
     age: true,
     pride: false,
@@ -59,7 +68,6 @@ export default function HomeScreen() {
     }));
   };
   
-
 const resetBasicToggles = () => {
   setToggleStates((prevState) => ({
     ...prevState, // Preserve the current state
@@ -453,19 +461,34 @@ const resetProToggles = () => {
 
           {/* Menu Items */}
           <View style={styles.rightSidebarMenu}>
-            <TouchableOpacity style={styles.rightSidebarMenuItem}>
-              <Ionicons name="person-circle" style={styles.rightSidebarMenuIcon} />
+            <TouchableOpacity style={styles.rightSidebarMenuItem} onPress={() => router.push('sidebarPage/myProfile')}>
+              <Image
+                source={MyprofileImage}
+                width={25 }
+                height={25}
+                 style={styles.rightSidebarMenuIcon}
+              />
               <Text style={styles.rightSidebarMenuText}>My Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.rightSidebarMenuItem}>
-              <Ionicons name="settings" style={styles.rightSidebarMenuIcon} />
+            <TouchableOpacity style={styles.rightSidebarMenuItem} onPress={() => router.push('sidebarPage/settings')}>
+              <Image
+                source={SettingsImage}
+                width={25 }
+                height={25}
+                 style={styles.rightSidebarMenuIcon}
+              />
               <Text style={styles.rightSidebarMenuText}>Settings</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.rightSidebarMenuItem}>
-              <Ionicons name="help-circle" style={styles.rightSidebarMenuIcon} />
+            <TouchableOpacity style={styles.rightSidebarMenuItem} onPress={() => router.push('sidebarPage/submitTicket')}>
+               <Image
+                source={SubmitTicketImage}
+                width={25 }
+                height={25}
+                 style={styles.rightSidebarMenuIcon}
+              />
               <Text style={styles.rightSidebarMenuText}>Submit Ticket</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.rightSidebarMenuItem}>
+            <TouchableOpacity style={styles.rightSidebarMenuItem} onPress={() => router.push('sidebarPage/changeAppIcon')}>
               <Image
                 source={AppIcon}
                 width={25 }
@@ -474,7 +497,7 @@ const resetProToggles = () => {
               />
               <Text style={styles.rightSidebarMenuText}>Change App Icon</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.rightSidebarMenuItem}>
+            <TouchableOpacity style={styles.rightSidebarMenuItem} onPress={() => router.push('sidebarPage/verifyMe')}>
               <Image
                 source={VerifyMe}
                 width={25 }
@@ -1243,7 +1266,8 @@ modalContainer: {
    position: 'absolute',
     top: 0,
     bottom: 0,
-    width: '80%',
+     width: '80%',
+    height:'100%',
     backgroundColor: '#000000',
     padding: 20,
     zIndex: 1001,

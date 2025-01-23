@@ -38,6 +38,16 @@ export default function RootLayout() {
           <Stack.Screen name="chat/detail" options={{ headerShown: false }} />
           <Stack.Screen name="chat/reportUserPage" options={{ headerShown: false }} />
           <Stack.Screen name="chat/userProfilePage" options={{ headerShown: false }} />
+          <Stack.Screen name="sidebarPage/myProfile" options={{ headerShown: false }} />
+          <Stack.Screen name="sidebarPage/settings" options={{ headerShown: false }} />
+          <Stack.Screen name="sidebarPage/verifyMe" options={{ headerShown: false }} />
+          <Stack.Screen name="sidebarPage/changeAppIcon" options={{ headerShown: false }} />
+        <Stack.Screen name="sidebarPage/submitTicket" options={{ headerShown: false }} />
+          <Stack.Screen name="sidebarPage/blockedUserPage" options={{ headerShown: false }} />
+          <Stack.Screen name="sidebarPage/myAccountPage" options={{ headerShown: false }} />
+          <Stack.Screen name="sidebarPage/safetyResourcesPage" options={{ headerShown: false }} />
+          <Stack.Screen name="sidebarPage/userPoliciesPage" options={{ headerShown: false }} />
+
           <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
