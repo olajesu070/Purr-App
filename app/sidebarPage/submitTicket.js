@@ -1,17 +1,40 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Modal, FlatList } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Modal,
+  FlatList,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 export default function SubmitTicketPage() {
   const navigation = useNavigation();
-  
+
   // State for the tabs, subject dropdown and success modal
   const [selectedTab, setSelectedTab] = useState('Support');
   const [selectedSubject, setSelectedSubject] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [description, setDescription] = useState('');
   const [ticketSubmitted, setTicketSubmitted] = useState(false);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const router = useRouter();
+
+  const handleSubjectSelect = (item) => {
+    if (selectedSubjects.includes(item)) {
+      // Remove from selection
+      setSelectedSubjects(
+        selectedSubjects.filter((subject) => subject !== item)
+      );
+    } else {
+      // Add to selection
+      setSelectedSubjects([...selectedSubjects, item]);
+    }
+  };
 
   // Subject options for the dropdown
   const subjects = [
@@ -23,10 +46,10 @@ export default function SubmitTicketPage() {
   ];
 
   // Handle subject selection from the dropdown
-  const handleSubjectSelect = (subject) => {
-    setSelectedSubject(subject);
-    setIsModalVisible(false);
-  };
+  // const handleSubjectSelect = (subject) => {
+  //   setSelectedSubject(subject);
+  //   setIsModalVisible(false);
+  // };
 
   // Handle form submission
   const handleSubmit = () => {
@@ -37,18 +60,33 @@ export default function SubmitTicketPage() {
     <View style={styles.container}>
       {ticketSubmitted ? (
         // Ticket Submission Success Page
-        <View style={styles.successPage}>
+        <View style={styles.container}>
+          {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.headerText}>Submit a Ticket</Text>
+            <Text style={styles.headerText}>Submit A Ticket</Text>
           </View>
-          <Text style={styles.successText}>Your ticket has been submitted</Text>
-          <Text style={styles.successText}>
-            Please allow up to 48 hours for our Purr team to respond and assess your report.
-          </Text>
-          <TouchableOpacity style={styles.continueButton} onPress={() => navigation.navigate('Index')}>
+
+          {/* Success Message */}
+          <View style={styles.centerContent}>
+            <Text style={styles.successText}>
+              Your ticket has been{' '}
+              <Text style={styles.purpleText}>submitted</Text>
+            </Text>
+
+            <Text style={styles.infoText}>
+              Please allow up to 48 hours for our Purr Team to respond and
+              assess your report.
+            </Text>
+          </View>
+
+          {/* Button at Bottom */}
+          <TouchableOpacity
+            style={styles.continueButton}
+            // onPress={() => navigation.navigate('add')}
+            onPress={() => {
+              router.push('/chat');
+            }}
+          >
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </View>
@@ -57,22 +95,31 @@ export default function SubmitTicketPage() {
         <View style={styles.mainPage}>
           {/* Header */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={styles.backButton}
+            >
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
-            <Text style={styles.headerText}>Submit a Ticket</Text>
+            <Text style={styles.headerText}>Submit A Ticket</Text>
           </View>
 
           {/* Tabs: Support and Feedback */}
           <View style={styles.tabsContainer}>
             <TouchableOpacity
-              style={[styles.tab, selectedTab === 'Support' && styles.activeTab]}
+              style={[
+                styles.tab,
+                selectedTab === 'Support' && styles.activeTab,
+              ]}
               onPress={() => setSelectedTab('Support')}
             >
               <Text style={styles.tabText}>Support</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.tab, selectedTab === 'Feedback' && styles.activeTab]}
+              style={[
+                styles.tab,
+                selectedTab === 'Feedback' && styles.activeTab,
+              ]}
               onPress={() => setSelectedTab('Feedback')}
             >
               <Text style={styles.tabText}>Feedback</Text>
@@ -83,7 +130,10 @@ export default function SubmitTicketPage() {
           {selectedTab === 'Support' && (
             <>
               <Text style={styles.label}>Subject</Text>
-              <TouchableOpacity style={styles.dropdown} onPress={() => setIsModalVisible(true)}>
+              <TouchableOpacity
+                style={styles.dropdown}
+                onPress={() => setIsModalVisible(true)}
+              >
                 <Text style={styles.dropdownText}>
                   {selectedSubject || 'Select Subject'}
                 </Text>
@@ -114,23 +164,32 @@ export default function SubmitTicketPage() {
       <Modal visible={isModalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
-            <FlatList
-              data={subjects}
-              renderItem={({ item }) => (
+            <View style={styles.tagsContainer}>
+              {subjects.map((item, index) => (
                 <TouchableOpacity
-                  style={styles.modalItem}
+                  key={index}
+                  style={[
+                    styles.tag,
+                    selectedSubjects.includes(item) && styles.selectedTag,
+                  ]}
                   onPress={() => handleSubjectSelect(item)}
                 >
-                  <Text style={styles.modalItemText}>{item}</Text>
+                  <Text
+                    style={[
+                      styles.tagText,
+                      selectedSubjects.includes(item) && styles.selectedTagText,
+                    ]}
+                  >
+                    {item}
+                  </Text>
                 </TouchableOpacity>
-              )}
-              keyExtractor={(item, index) => index.toString()}
-            />
+              ))}
+            </View>
             <TouchableOpacity
               style={styles.modalCloseButton}
               onPress={() => setIsModalVisible(false)}
             >
-              <Text style={styles.buttonText}>Close</Text>
+              <Text style={styles.buttonText}>Apply</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -144,6 +203,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
     paddingHorizontal: 20,
+    justifyContent: 'space-between',
   },
   header: {
     flexDirection: 'row',
@@ -165,25 +225,26 @@ const styles = StyleSheet.create({
   tabsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
-    marginVertical: 20,
+    marginVertical: 10,
+    backgroundColor: '#202325',
+    borderRadius: 8,
   },
   tab: {
     flex: 1,
     paddingVertical: 10,
-    borderBottomWidth: 2,
-    borderColor: '#333',
     alignItems: 'center',
   },
   activeTab: {
-    borderBottomColor: '#B976FF',
-    backgroundColor:'red'
+    backgroundColor: '#303437',
+    borderRadius: 8,
+    color: 'red',
   },
   tabText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: '500',
   },
   label: {
     color: '#fff',
@@ -193,7 +254,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     padding: 12,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#202325',
     borderRadius: 5,
   },
   dropdownText: {
@@ -201,8 +262,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   textArea: {
-    height: 120,
-    borderColor: '#333',
+    height: 320,
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
@@ -210,6 +270,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlignVertical: 'top',
     marginBottom: 20,
+    backgroundColor: '#202325',
+    marginTop: '10 ',
   },
   submitButton: {
     paddingVertical: 15,
@@ -217,6 +279,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 20,
     alignItems: 'center',
+  },
+  infoText: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 10,
+    paddingHorizontal: 10,
   },
   buttonText: {
     color: '#fff',
@@ -233,29 +302,59 @@ const styles = StyleSheet.create({
   successText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '700',
     marginBottom: 20,
     textAlign: 'center',
+  },
+  purpleText: {
+    color: 'purple',
+    fontWeight: '700',
   },
   continueButton: {
     paddingVertical: 15,
     backgroundColor: '#B976FF',
-    borderRadius: 5,
+    borderRadius: 48,
     marginTop: 20,
     width: '100%',
     alignItems: 'center',
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   modalContainer: {
-    backgroundColor: '#1A1A1A',
-    borderRadius: 10,
-    width: '80%',
+    backgroundColor: '#202325',
+    width: '100%',
     padding: 20,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  selectedTag: {
+    backgroundColor: '#B976FF',
+  },
+  tagText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  selectedTagText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  tag: {
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    margin: 5,
+    borderRadius: 20,
+  },
+  tagText: {
+    fontSize: 14,
+    color: '#333',
   },
   modalItem: {
     paddingVertical: 10,
