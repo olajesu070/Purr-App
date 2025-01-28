@@ -15,7 +15,6 @@ import PurrChatActive from '../../assets/images/purrChatActive.png';
 import PurrLocation from '../../assets/images/purrLocation.png';
 import PurrLocationActive from '../../assets/images/purrLocationActive.png';
 
-
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
@@ -26,6 +25,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
+        tabBarShowLabel: false, // Hide tab names
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
@@ -33,11 +33,12 @@ export default function TabLayout() {
           },
           default: {},
         }),
-      }}>
-        <Tabs.Screen
+      }}
+    >
+      <Tabs.Screen
         name="add"
         options={{
-          title: 'add',
+          // title: 'add',
           tabBarIcon: ({ focused }) => (
             <Image
               source={focused ? PurrAddActive : PurrAdd}
@@ -49,44 +50,44 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-              name="chat"
-              options={{
-                title: 'chat',
-                tabBarIcon: ({ focused }) => (
-                  <Image
-                    source={focused ? PurrChatActive : PurrChat}
-                    style={{ width: 20, height: 20 }}
-                    resizeMode="contain"
-                  />
-                ),
-              }}
+        name="chat"
+        options={{
+          // title: 'chat',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? PurrChatActive : PurrChat}
+              style={{ width: 20, height: 20 }}
+              resizeMode="contain"
             />
-              <Tabs.Screen
-                  name="index"
-                   options={{
-                   title: 'home',
-                    tabBarIcon: ({ focused }) => (
-                    <Image
-                      source={focused ? PurrHomeActive : PurrHome}
-                      style={{ width: 20, height: 20 }}
-                      resizeMode="contain"
-                    />
-                  ),
-          }}
-        />
-            <Tabs.Screen
-              name="map"
-              options={{
-                title: 'map',
-                tabBarIcon: ({ focused }) => (
-                  <Image
-                    source={focused ? PurrLocationActive : PurrLocation}
-                    style={{ width: 20, height: 20 }}
-                    resizeMode="contain"
-                  />
-                ),
-              }}
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          //  title: 'home',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? PurrHomeActive : PurrHome}
+              style={{ width: 20, height: 20 }}
+              resizeMode="contain"
             />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="map"
+        options={{
+          // title: 'map',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? PurrLocationActive : PurrLocation}
+              style={{ width: 20, height: 20 }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

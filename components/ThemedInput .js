@@ -10,6 +10,8 @@ export default function ThemedInput({
   style,
   validateOnBlur = true,
   errorText = 'This field is required.',
+  placeholderColor = '#303437', // 🎨 Dynamic placeholder color
+  keyboardType = 'default', // ⌨️ Default keyboard type
 }) {
   const [isFocused, setIsFocused] = useState(false);
   const [isValid, setIsValid] = useState(true);
@@ -23,12 +25,6 @@ export default function ThemedInput({
 
   const handleFocus = () => {
     setIsFocused(true);
-  };
-
-  const validateInput = () => {
-    if (required) {
-      setIsValid(!!value?.trim());
-    }
   };
 
   const borderColor = isFocused
@@ -46,9 +42,10 @@ export default function ThemedInput({
           onChangeText(text);
         }}
         placeholder={placeholder}
-        placeholderTextColor={'#303437'}
+        placeholderTextColor={placeholderColor} // 🔥 Dynamic placeholder color
         onFocus={handleFocus}
         onBlur={handleBlur}
+        keyboardType={keyboardType} // ⌨️ Dynamic keyboard type
         style={[styles.input, { borderColor }]}
       />
       {!isValid && <Text style={styles.errorText}>{errorText}</Text>}
@@ -66,7 +63,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-    color:'white'
+    color: 'white',
   },
   errorText: {
     color: '#ff4d4f',

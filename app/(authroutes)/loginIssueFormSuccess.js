@@ -1,139 +1,125 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect } from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import ThemedButton from '../../components/ThemedButton';
 import { router } from 'expo-router';
 
-const LoginIssueFormSuccess = ({ navigation }) => {
-    const [email, setEmail] = useState('');
+const LoginIssueFormSuccess = () => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push('/');
+    }, 2000); // Redirect after 2 seconds
 
-    const handleFormSubmitted = () => {
-        router.push({
-            pathname: '/',
-        });
-    };
+    return () => clearTimeout(timer);
+  }, []);
 
-    const handleIssueFormPage = () => {
-        router.push({
-            pathname: '/',
-        });
-    };
+  return (
+    <ThemedView style={styles.container}>
+      <ThemedText style={styles.title}>Having Trouble</ThemedText>
+      <View style={styles.textContainer}>
+        <ThemedText style={styles.headerText}>
+          Your ticket has been <Text style={styles.spanText}>submitted</Text>
+        </ThemedText>
+        <ThemedText style={styles.subtext}>
+          Please allow up to 24-48 hours for the Purr team to reply.
+        </ThemedText>
+      </View>
+      {/* Chat Bubble */}
+      <View style={styles.chatContainer}>
+        <View style={styles.chatBubble}>
+          <Text style={styles.chatText}>We’re here to help!</Text>
+          <View style={styles.bubbleTail} />
+        </View>
+      </View>
 
-    return (
-        <ThemedView style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.push('/')}>
-                    <Ionicons name="chevron-back" size={24} color="white" />
-                </TouchableOpacity>
-            </View>
-            <ThemedText style={styles.title}>
-            Having&nbsp;
-                <Text style={styles.welcomeText}>Trouble?</Text>
-            </ThemedText>
-
-            <View style={styles.textContainer}>
-                <ThemedText style={styles.subtext}>
-                    Your ticket has been <Text style={styles.spanText}>submitted</Text>
-                </ThemedText>
-                {/* <View style={styles.break} /> */}
-                <ThemedText style={styles.subtext}>
-                    Please allow up to 24-48 hours for the Purr team to reply.
-                </ThemedText>
-            </View>
-
-
-            <ThemedButton
-                title="Ok"
-                onPress={handleFormSubmitted}
-                style={styles.button}
-            />
-        </ThemedView>
-    );
+      {/* Bottom-right image */}
+      <Image
+        source={require('@/assets/images/bottomRightImage.png')} // Replace with your image path
+        style={styles.image}
+        resizeMode="contain"
+      />
+    </ThemedView>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-
-    textContainer: {
-    flex: 1, // Ensures the container takes full height
-    justifyContent: 'center', // Vertically centers the content
-    alignItems: 'center', // Horizontally centers the content
-    padding: 20, // Adds some spacing around the text
-    },
-   
-    spanText: {
-        color: '#B976FF',
-        textDecorationLine: 'underline',
-        textDecorationColor: '#B976FF',
-    },
-
-
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        
-    },
-   spanText: {
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  title: {
+    fontSize: 20,
+    alignSelf: 'center',
+    fontWeight: '700',
+  },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  spanText: {
     color: '#B976FF',
-    textDecorationLine: 'underline', // This adds the underline
-    textDecorationColor: '#B976FF',  // This sets the underline color
-    },
-    changePhoneNumber: {
-        color: '#B976FF',
-        fontSize: 18,
-        fontWeight: '500',
-    },
-    subtext: {
-        fontSize: 18,
-        color: '#ffffff',
-        marginBottom: 5,
-       alignSelf: 'center',
-        maxWidth: 300,
-        textAlign: 'center',
-        bottom: 40, // Distance from the bottom
-        left: 16,
-        right: 16,
-        alignSelf: 'center',
-        fontWeight:'700'
-    },
-    title: {
-        fontSize: 40,
-        fontWeight: '800',
-        // marginBottom: 10,
-        marginLeft: 10,
-    },
-    subtitle: {
-        fontSize: 20,
-        color: '#FFFFFF',
-        marginLeft: 10,
-
-    },
-    input: {
-        borderColor: '#ffffff',
-        borderWidth: 1,
-        borderRadius: 8,
-        padding: 10,
-        fontSize: 16,
-        marginBottom: 20,
-        color: '#ffffff',
-        marginTop: 50
-    },
-    button: {
-        position: 'absolute',
-        bottom: 20, // Distance from the bottom
-        left: 16,
-        right: 16,
-        alignSelf: 'center',
-    },
-    welcomeText:{
-        color: '#B976FF',
-    }
+    textDecorationLine: 'underline',
+    textDecorationColor: '#B976FF',
+  },
+  headerText: {
+    fontSize: 18,
+    color: '#ffffff',
+    marginBottom: 5,
+    textAlign: 'center',
+    fontWeight: '700',
+  },
+  subtext: {
+    fontSize: 18,
+    color: '#ffffff',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  image: {
+    position: 'absolute',
+    bottom: -50,
+    right: 10,
+    width: '50%', // Adjust width as needed
+    height: '50%', // Adjust height as needed
+  },
+  chatContainer: {
+    position: 'absolute',
+    bottom: 130, // Position it towards the bottom
+    left: 20, // Align it to the left side
+  },
+  chatBubble: {
+    backgroundColor: '#303437',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    maxWidth: 250, // Set a max width for readability
+    position: 'relative',
+    borderBottomRightRadius: 0,
+  },
+  chatText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  bubbleTail: {
+    position: 'absolute',
+    bottom: -1, // Moves it slightly below the chat bubble
+    right: -7, // Positions it on the bottom right of the chat bubble
+    width: 0,
+    height: 0,
+    // top: 28,
+    // left: 10,
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderStyle: 'solid',
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#303437', // Matches the chat bubble color
+    transform: [{ rotate: '227deg' }], // Rotates it to point bottom-right
+  },
 });
 
 export default LoginIssueFormSuccess;
