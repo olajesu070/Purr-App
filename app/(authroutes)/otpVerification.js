@@ -59,12 +59,18 @@ const OtpVerification = () => {
       <ThemedText style={styles.subtitle}>
         Enter the 6-digit code that we have sent to +1 [NUMBER]
       </ThemedText>
-      <View style={styles.catHeadContainer}>
-        <CatHeadOtpInput length={6} onComplete={handleOtpComplete} />
+      <View style={{ flex: 1 }}>
+        <View style={styles.catHeadContainer}>
+          <CatHeadOtpInput
+            length={6}
+            onComplete={handleOtpComplete}
+            style={{ flex: 1 }}
+          />
+        </View>
       </View>
+
       <View style={styles.timerContainer}>
         <Text style={styles.timerText}>
-          {' '}
           <Text style={styles.timerText}>{formattedTime}</Text>
         </Text>
       </View>
