@@ -1,640 +1,626 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  Image,
+  ImageBackground,
+  ScrollView,
   TouchableOpacity,
   StyleSheet,
-  ScrollView,
-    Modal,
-  TouchableWithoutFeedback,
-} from "react-native";
-import { Ionicons, FontAwesome } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import UserProfileImage from '../../assets/images/userProfileImage.png';
-import UserProfileChat from '../../assets/images/userProfileChat.png';
-import UserProfileFootstamp from '../../assets/images/userProfileFootstamp.png';
-import GoogleAdsImage from '../../assets/images/googleAds.png';
+  Image,
+  TextInput,
+} from 'react-native';
+import ProfileImage from '../../assets/images/mainUserProfilePicture.png';
+import EditIcon from '../../assets/images/editIcon.png';
+import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
+import OnlineStatus from '../../components/OnlineStatus';
+import VerifiedBadge from '../../components/VerifiedBadge';
+import StatusBadge from '../../components/StatusBadge';
 
+const UserProfilePage = () => {
+  const [activeTab, setActiveTab] = useState('about');
+  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingPhotos, setIsEditingPhotos] = useState(false);
+  const [photos, setPhotos] = useState([
+    require('../../assets/images/profilePhoto1.png'),
+    require('../../assets/images/profilePhoto3.png'),
+    require('../../assets/images/profilePhoto2.png'),
+    require('../../assets/images/profilePhoto3.png'),
+  ]);
+  const [editedName, setEditedName] = useState('Screen Name'); // Initial name
+  const [tags, setTags] = useState([
+    { label: 'Pronouns', values: ['She/Her'] },
+    { label: 'Height', values: ['5’5”'] },
+    { label: 'Gender Identity', values: ['Queer', 'Woman'] },
+    {
+      label: 'Zodiac',
+      values: ['Capricorn', 'Libra', 'Leo', 'Virgo'],
+    },
+    {
+      label: 'Interest',
+      values: ['Music', 'Movies', 'History', 'Politics', 'Reading', 'Law'],
+    },
+    {
+      label: 'Activities',
+      values: ['Concert', 'Hunting', 'Camping', 'Dancing', 'Clubbing'],
+    },
+  ]);
+  const [aboutMeText, setAboutMeText] =
+    useState(`Hi, I’m John! I love adventure, tech, and making friends.
+I’m a software engineer who enjoys exploring new technologies, solving complex problems, and creating meaningful digital experiences.
+Outside of coding, you’ll find me traveling to new places, hiking in nature, and capturing moments through photography.
+I have a deep passion for gaming, music, and meeting like-minded individuals who inspire me.
+I believe in continuous growth, embracing challenges, and making an impact wherever I go.
+Let's connect and create something amazing together!`);
 
+  const updateTagValue = (tagIndex, valueIndex, newValue) => {
+    setTags((prevTags) => {
+      const updatedTags = [...prevTags];
+      updatedTags[tagIndex] = {
+        ...updatedTags[tagIndex],
+        values: updatedTags[tagIndex].values.map((val, idx) =>
+          idx === valueIndex ? newValue : val
+        ),
+      };
+      return updatedTags;
+    });
+  };
 
-
-const UserProfilePage = ({ navigation }) => {
-  const [isFullScreen, setIsFullScreen] = useState(false);
-  const [activeTab, setActiveTab] = useState("about");
-  const [flagModalVisible, setFlagModalVisible] = useState(false);
-  const [blockUserModalVisible, setBlockUserModalVisible] = useState(false);
-  const router = useRouter();
-  const handleOpenFlagModal = () => setFlagModalVisible(true);
-  const handleCloseFlagModal = () => setFlagModalVisible(false);
-
-    
-    // Reusable UserTag Component
-    const UserTag = ({ text }) => {
-      return (
-        <View style={styles.userTag}>
-          <Text style={styles.tagText}>{text}</Text>
-        </View>
-      );
-    };
-
+  const handlePhotoChange = (index) => {
+    // Implement logic to update the photo (e.g., open image picker)
+    console.log(`Editing photo at index ${index}`);
+  };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="white" />
-        </TouchableOpacity>
+      <StatusBar
+        translucent={true}
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
 
-        {/* White Flag */}
-       <TouchableOpacity onPress={handleOpenFlagModal}>
-        <Ionicons name="flag" size={24} color="white" />
-      </TouchableOpacity>
+      {/* Background Profile Image */}
+      <ImageBackground
+        source={ProfileImage}
+        style={styles.profileBackground}
+        resizeMode="cover"
+      />
+
+      <View style={styles.statusContainer}>
+        <StatusBadge status="verification_pending" />
+        <StatusBadge status="verification_error" />
+        <StatusBadge status="photo_in_review" />
+        <StatusBadge status="photo_denied" />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Profile Image */}
-        <TouchableOpacity onPress={() => setIsFullScreen(true)}>
-          <Image
-            source={UserProfileImage} // Replace with actual user image
-            style={styles.profileImage}
-          />
-        </TouchableOpacity>
+      {isEditing ? (
+        <ScrollView style={styles.editProfileContainer}>
+          {/* Header */}
+          <View style={styles.editHeader}>
+            <TouchableOpacity onPress={() => setIsEditing(false)}>
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Edit Profile</Text>
+            <TouchableOpacity>
+              <Image source={EditIcon} />
+            </TouchableOpacity>
+          </View>
 
-        {/* Full-Screen Image Modal */}
-        <Modal visible={isFullScreen} transparent>
-          <TouchableOpacity style={styles.fullScreenContainer} onPress={() => setIsFullScreen(false)}>
-            <Image
-               source={UserProfileImage}
-              style={styles.fullScreenImage}
+          {/* Editable Username */}
+          <View style={styles.inputContainer}>
+            {/* <Text style={styles.label}>Username</Text> */}
+            <TextInput
+              style={styles.textInput}
+              value={editedName}
+              onChangeText={setEditedName}
             />
+          </View>
+
+          {/* My Photos Section */}
+          <View style={styles.photosSection}>
+            <Text style={styles.label}>My Photos</Text>
+            <TouchableOpacity
+              style={styles.editPhotosButton}
+              onPress={() => setIsEditingPhotos(true)}
+            >
+              <Text style={styles.editPhotosText}>Edit</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Reusing Tabs */}
+          <View style={styles.tabsContainer}>
+            <TouchableOpacity
+              style={[styles.tab, activeTab === 'about' && styles.activeTab]}
+              onPress={() => setActiveTab('about')}
+            >
+              <Text style={styles.tabText}>About Me</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.tab, activeTab === 'stats' && styles.activeTab]}
+              onPress={() => setActiveTab('stats')}
+            >
+              <Text style={styles.tabText}>Stats</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Editable About Me Section */}
+          {activeTab === 'about' && (
+            <View style={styles.aboutContainer}>
+              <Text style={styles.sectionLabel}>About Me</Text>
+              <TextInput
+                style={styles.aboutInput}
+                multiline
+                value={aboutMeText}
+                onChangeText={setAboutMeText}
+              />
+            </View>
+          )}
+
+          {/* Editable Tag Sections */}
+          <View style={styles.tagsSection}>
+            {tags.map((item, tagIndex) => (
+              <View key={tagIndex} style={styles.tagWrapper}>
+                <Text style={styles.tagLabel}>{item.label}</Text>
+                <View style={styles.tagValuesContainer}>
+                  {item.values.map((value, valueIndex) => (
+                    <TextInput
+                      key={valueIndex}
+                      style={styles.tagInput}
+                      value={value}
+                      onChangeText={(text) =>
+                        updateTagValue(tagIndex, valueIndex, text)
+                      }
+                    />
+                  ))}
+                </View>
+              </View>
+            ))}
+          </View>
+
+          {/* Save Button */}
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={() => setIsEditing(false)}
+          >
+            <Text style={styles.saveButtonText}>Save</Text>
           </TouchableOpacity>
-        </Modal>
-
-        {/* Purple Line */}
-        <View style={styles.lineContainer}>
-            <View style={styles.grayLine} />
-            <View style={styles.purpleLine} />
-            <View style={styles.grayLine} />
-        </View>
-
-
-        {/* User Info Row */}
-        <View style={styles.userInfoRow}>
-          <View style={styles.userInfoLeft}>
-            <View style={styles.onlineBadge} />
-            <Text style={styles.username}>Danielle,</Text>
-            <Text style={styles.age}>25</Text>
-          </View>
-          <View style={styles.chatIcons}>
-                <TouchableOpacity>
-                        <Image
-                        source={UserProfileFootstamp}
-                        style={styles.userProfileImage}
-                        />
-                </TouchableOpacity>
-                      <TouchableOpacity style={styles.chatIconSpacing} onPress={() => router.back()}>
-                          <Image
-                                source={UserProfileChat}
-                                style={styles.userProfileImage}
-                            />
-                        </TouchableOpacity>
-          </View>
-        </View>
-
-       <View style={styles.userTagContainer}>
-            <UserTag text="She/Her" />
-            <UserTag text="2 miles away" />
-        </View>
-
-              
-
-        {/* Tabs (About Me | Stats) */}
-        <View style={styles.tabs}>
-      {/* About Me Tab */}
-      <TouchableOpacity
-        style={[styles.tab, activeTab === "about" && styles.activeTab]}
-        onPress={() => setActiveTab("about")}
-      >
-        <Text style={[styles.tabText, activeTab === "about" && styles.activeTabText]}>
-          About Me
-        </Text>
-      </TouchableOpacity>
-
-      {/* Stats Tab */}
-      <TouchableOpacity
-        style={[styles.tab, activeTab === "stats" && styles.activeTab]}
-        onPress={() => setActiveTab("stats")}
-                  >
-                      <View>
-                          <Text style={[styles.tabText, activeTab === "stats" && styles.activeTabText]}>
-                            Stats
-                            </Text>
+        </ScrollView>
+      ) : (
+        // Original Profile View
+        <ScrollView style={styles.profileDetailsContainer}>
+          <View style={styles.contentBox}>
+            {/* Profile Info */}
+            <View style={styles.profileRow}>
+              <View style={styles.profileInfo}>
+                <OnlineStatus isOnline={true} />
+                <View style={styles.nameAndAge}>
+                  <Text style={styles.screenName}>Screen Name,</Text>
+                  <Text style={styles.age}>25</Text>
+                </View>
+                <View style={styles.verifiedBadge}>
+                  <VerifiedBadge />
+                </View>
+              </View>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => setIsEditing(true)}
+              >
+                <Image source={EditIcon} />
+              </TouchableOpacity>
+            </View>
+            {/* Gender Tag */}
+            <View style={styles.tagContainer}>
+              <Text style={styles.tagText}>She/Her</Text>
+            </View>
+            {/* Tabs: About Me & Stats */}
+            <View style={styles.tabsContainer}>
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'about' && styles.activeTab]}
+                onPress={() => setActiveTab('about')}
+              >
+                <Text style={styles.tabText}>About Me</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.tab, activeTab === 'stats' && styles.activeTab]}
+                onPress={() => setActiveTab('stats')}
+              >
+                <Text style={styles.tabText}>Stats</Text>
+              </TouchableOpacity>
+            </View>
+            {/* About Me Section */}
+            {activeTab === 'about' && (
+              <View style={styles.aboutContainer}>
+                <View style={styles.aboutContainer}>
+                  <Text style={styles.sectionLabel}>About Me</Text>
+                  <View style={styles.aboutBox}>
+                    <Text style={styles.aboutText}>
+                      Hi, I’m John! I love adventure, tech, and making friends.
+                      I’m a software engineer who enjoys exploring new
+                      technologies, solving complex problems, and creating
+                      meaningful digital experiences. Outside of coding, you’ll
+                      find me traveling to new places, hiking in nature, and
+                      capturing moments through photography. I have a deep
+                      passion for gaming, music, and meeting like-minded
+                      individuals who inspire me. I believe in continuous
+                      growth, embracing challenges, and making an impact
+                      wherever I go. Let's connect and create something amazing
+                      together! 🚀
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            )}
+            {/* Tag Sections */}
+            <View style={styles.tagsSection}>
+              {tags.map((item, index) => (
+                <View key={index} style={styles.tagWrapper}>
+                  <Text style={styles.tagLabel}>{item.label}</Text>
+                  <View style={styles.tagValuesContainer}>
+                    {item.values.map((value, idx) => (
+                      <View key={idx} style={styles.tagContainer}>
+                        <Text style={styles.tagText}>{value}</Text>
                       </View>
-        
-      </TouchableOpacity>
-    </View>
-
-              <View style={{ flex: 1, justifyContent: "center", alignItems: "center", marginTop: 20 }}>
-        <Image source={GoogleAdsImage} style={styles.googleAdsImage} />
-    </View>
-
-        {/* About Me Section */}
-              {activeTab === "about" && (
-                  <View style={styles.sectionContainer}>
-                        <View>
-                            <Text style={styles.sectionLabel}>About</Text>
-                        </View>
-                        <View style={styles.section}>
-                            <Text style={styles.sectionContent}>
-                            I love traveling and meeting new people.
-                            </Text>
-                        </View>
-                    </View>
-                )}
-
-       {/* Stats Section */}
-       {activeTab === "stats" && (
-        <View style={styles.sectionContainer}>
-            {/* About Section */}
-            <View>
-            <Text style={styles.sectionLabel}>About</Text>
+                    ))}
+                  </View>
+                </View>
+              ))}
             </View>
-            <View style={styles.section}>
-            <Text style={styles.sectionContent}>
-                I love traveling and meeting new people.
-            </Text>
-            </View>
+          </View>
+        </ScrollView>
+      )}
+      {isEditingPhotos ? (
+        <ScrollView style={styles.editPhotosContainer}>
+          {/* Header */}
+          <View style={styles.editHeader}>
+            <TouchableOpacity onPress={() => setIsEditingPhotos(false)}>
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Edit Photos</Text>
+            <TouchableOpacity>
+              <Image source={EditIcon} />
+            </TouchableOpacity>
+          </View>
 
-           {/* Tags Section */}
-<View style={styles.tagSection}>
-    <Text style={styles.tagTitle}>Height</Text>
-    <View style={styles.userTagContainer}>
-        <UserTag text="5’5”" />
-    </View>
-
-    <Text style={styles.tagTitle}>Gender Identity</Text>
-    <View style={styles.userTagContainer}>
-        <UserTag text="Queer" />
-        <UserTag text="Woman" />
-    </View>
-                          
-                          <Text style={styles.tagTitle}>Sexual Identity</Text>
-    <View style={styles.userTagContainer}>
-        <UserTag text="Lesbian" />
-    </View>
-                          
-  <Text style={styles.tagTitle}>Prides</Text>
-    <View style={styles.userTagContainer}>
-        <UserTag text="Hey Mamas" />
-        <UserTag text="Lipstick" />
-    </View>
-                          
-
-  <Text style={styles.tagTitle}>Relationship Status</Text>
-    <View style={styles.userTagContainer}>
-        <UserTag text="Single" />
-     </View>
-                          
-
-  <Text style={styles.tagTitle}>Position</Text>
-    <View style={styles.userTagContainer}>
-        <UserTag text="Pillow Princess" />
-                          </View>
-                          
-    <Text style={styles.tagTitle}>Prowling For</Text>
-    <View style={styles.userTagContainer}>
-        <UserTag text="Relationship" />
-        <UserTag text="Hookups" />
-        <UserTag text="Dates" />
-        </View>
-                          
-                          <Text style={styles.tagTitle}>Body Type</Text>
-    <View style={styles.userTagContainer}>
-        <UserTag text="Average" />
-    </View>
-                        
-                          
-
-</View>
-
-        </View>
-        )}
-      </ScrollView>
-
-      {/* Flag Modal */}
-                  <Modal
-             animationType="slide"
-             transparent={true}
-             visible={flagModalVisible}
-             onRequestClose={handleCloseFlagModal}
-           >
-             <View style={styles.flagModalOverlay}>
-               <View style={styles.flagModalContent}>
-                 {/* Flag Buttons */}
-                 <View style={styles.flagModalButtonRow}>
-                   <TouchableOpacity style={styles.flagModalButton}  onPress={() => {
-                         router.push('/chat/reportUserPage');
-                         setFlagModalVisible(false);
-                         }}>
-                     <Text style={styles.flagModalButtonText}>Report</Text>
-                   </TouchableOpacity>
-                 </View>
-                 <View style={styles.flagModalButtonRow}>
-                               <TouchableOpacity style={styles.flagModalButton}   onPress={() => { setBlockUserModalVisible(true); setFlagModalVisible(false); }}>
-                     <Text style={styles.flagModalButtonText}>Block</Text>
-                   </TouchableOpacity>
-                 </View>
-     
-                 <View style={styles.flagModalButtonRow}>
-                     <TouchableOpacity style={styles.flagModalButton}  onPress={handleCloseFlagModal}>
-                         <Text style={styles.flagModalCloseButtonText}>Cancel</Text>
-                     </TouchableOpacity>
-                 </View>
-                 {/* Close Modal Button */}
-                 {/* <TouchableOpacity onPress={handleCloseFlagModal} style={styles.flagModalCloseButton}>
-                   <Text style={styles.flagModalCloseButtonText}>Close</Text>
-                 </TouchableOpacity> */}
-               </View>
-             </View>
-               </Modal>
-              
-               {/* bottom block modal Modal */}
-               <Modal
-                 animationType="slide"
-                 transparent={true}
-                 visible={blockUserModalVisible}
-                 onRequestClose={() => setBlockUserModalVisible(false)}
-                 >
-                 <TouchableWithoutFeedback onPress={() => setBlockUserModalVisible(false)}>
-                 <View style={styles.blockUserModalOverlay}>
-                     <TouchableWithoutFeedback>
-                     <View style={styles.blockUserModalContainer}>
-                         {/* Header */}
-                         <Text style={styles.blockUserModalHeader}>Are you sure?</Text>
-     
-                         {/* Instructions */}
-                     <Text style={styles.blockUserModalText}>
-                             Blocking this user will count as{' '}
-                             <Text style={styles.blockUserModalHighlight}>7</Text> of the{' '}
-                             <Text style={styles.blockUserModalHighlight}>10</Text> Free users receive. To get unlimited blocks, upgrade to{' '}
-                             <Text style={styles.blockUserModalHighlight}>Purr+</Text>.
-                             </Text>
-     
-     
-                         {/* Continue Button */}
-                                   <TouchableOpacity 
-                                       onPress={() => {
-                         router.push('/chat');
-                         setBlockUserModalVisible(false);
-                         }}
-                         style={styles.blockUserModalContinueButton} 
-                         >
-                         <Text style={styles.blockUserModalContinueButtonText}>Continue</Text>
-                         </TouchableOpacity>
-                     </View>
-                     </TouchableWithoutFeedback>
-                 </View>
-                 </TouchableWithoutFeedback>
-             </Modal>
+          {/* Photo Grid */}
+          <View style={styles.photoGrid}>
+            {photos.map((photo, index) => (
+              <View key={index} style={styles.photoContainer}>
+                <Image source={photo} style={styles.photo} />
+                <TouchableOpacity
+                  style={styles.editVaultButton}
+                  onPress={() => handlePhotoChange(index)}
+                >
+                  <Text style={styles.buttonText}>Edit Vault</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.savePhotoButton}>
+                  <Text style={styles.buttonText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      ) : null}
     </View>
   );
 };
 
-
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: '#000',
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 15,
-      marginTop: 40,
+  profileBackground: {
+    position: 'absolute',
+    width: '100%',
+    height: '80%',
+    top: 0,
   },
-  profileImage: {
-    width: 350,
-    height: 400,
-    alignSelf: "center",
-      resizeMode: 'cover',
+  statusContainer: {
+    position: 'absolute',
+    top: 50,
+    right: 10,
   },
-  fullScreenContainer: {
-    flex: 1,
-    backgroundColor: "black",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  fullScreenImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
-    },
-    userProfileImage: {
-    width: 20,
-    height: 20,
-    resizeMode: "contain",
-    },
-  
   lineContainer: {
-    flexDirection: "row",
-    width: "30%", // Adjust width as needed
-    alignSelf: "center",
-    marginVertical: 20,
-    justifyContent: "center",
-  },
-  grayLine: {
-    height: 3,
-    backgroundColor: "#202325",
-    flex: 1, // Each section takes equal width
+    flexDirection: 'row', // Makes the line horizontal
+    width: '100%',
+    height: 4, // Adjust thickness as needed
   },
   purpleLine: {
-    height: 3,
-    backgroundColor: "#B976FF",
-    flex: 1, // The middle part has the same width as the others
+    width: '30%',
+    backgroundColor: 'purple',
   },
-  userInfoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    alignItems: "center",
+  blackLine: {
+    width: '70%',
+    backgroundColor: 'black',
   },
-  userInfoLeft: {
-    flexDirection: "row",
-    alignItems: "center",
+  profileDetailsContainer: {
+    flex: 1,
+  },
+  contentBox: {
+    marginTop: 450, // Push content to start overlapping the background
+    backgroundColor: '#000000',
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    padding: 16,
+    // minHeight: '100%', // Ensures content scrolls properly
+  },
+  profileRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  profileInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  nameAndAge: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   onlineBadge: {
     width: 10,
     height: 10,
-    backgroundColor: "green",
     borderRadius: 5,
-    marginRight: 5,
+    backgroundColor: 'green',
+    marginRight: 10,
   },
-  username: {
-    fontSize: 18,
-    color: "white",
-    fontWeight: "bold",
-    marginRight: 5,
+  screenName: {
+    fontSize: 25,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   age: {
-    fontSize: 16,
-    color: "#ccc",
+    fontSize: 25,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
-  chatIcons: {
-    flexDirection: "row",
-  },
-  chatIconSpacing: {
-    marginLeft: 15,
-  },
-  userTag: {
-    backgroundColor: "#303437",
-    padding: 10,
+  verifiedBadge: {
+    position: 'absolute', // Allows free placement anywhere on the screen
+    top: -37, // Adjust as needed
+    right: -140, // Adjust as needed
+    zIndex: 10, // Ensures it stays above other elements
+    backgroundColor: '#000',
+    padding: 5,
     borderRadius: 20,
-    alignSelf: "center",
-    marginVertical: 10,
-    },
-  
-  tagText: {
-    color: "white",
-    fontSize: 14,
   },
- tabs: {
-  flexDirection: "row",
-  width: "98%",
-  marginTop: 10,
-  backgroundColor: "#202325",
-  alignSelf: "center", // Centers the tabs horizontally
-  justifyContent: "center", // Ensures content is centered inside
-  borderRadius: 8, // Optional: adds rounded corners
-//   paddingVertical: 5, 
-},
-  tab: {
-    flex: 1, // Each tab takes up 50% of the width
-    padding: 10,
-    alignItems: "center",
+  editButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
   },
-  activeTab: {
-      backgroundColor: "#303437",
-      borderRadius: 6
-    
-  },
-  tabText: {
-    color: "white",
-    fontSize: 16,
-  },
-  activeTabText: {
-    fontWeight: "bold",
-    },
-  
-    googleAdsImage: {
-      backgroundColor:'red'
-  },
- section: {
-  backgroundColor: "#303437",
-  borderRadius: 10, // Rounded corners
-  padding: 12, 
-     marginTop: 10, 
-  marginHorizontal:5
-    },
-  sectionContainer: {
-  padding: 12, 
-     marginTop: 10, 
-//   marginHorizontal:15
-},
 
-sectionContent: {
-  fontSize: 16,
-  color: "white",
-},
-
-  sectionLabel: {
-    fontSize: 18,
-    color: "#ffffff",
-    fontWeight: "bold",
+  tagContainer: {
+    backgroundColor: '#303437',
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 15,
+    padding: 8,
+    borderRadius: 32,
+    // marginVertical: 5,
   },
-//   sectionContent: {
-//     fontSize: 16,
-//     color: "white",
-//       marginTop: 5,
-//     backgroundColor:'#303437'
-    //   },
-  tagTitle: {
-  fontSize: 16,
-  fontWeight: "bold",
-      color: "white",
-  marginTop:8
-//   marginBottom: 8, // Space between title and tags
-},
-  statLabel: {
-    fontSize: 16,
-    color: "#B976FF",
+  tagValuesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap', // Ensures tags wrap to the next line if needed
+    gap: 6, // Adds spacing between tags (use marginRight if gap doesn't work)
     marginTop: 10,
   },
-  statValue: {
-    fontSize: 16,
-    color: "white",
-    },
-  modalOverlay: {
+  tagText: {
+    color: '#fff',
+    fontWeight: '500',
+  },
+  tabsContainer: {
+    flexDirection: 'row',
+    marginVertical: 10,
+    backgroundColor: '#202325',
+    borderRadius: 8,
+    padding: 2,
+  },
+  tab: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    paddingVertical: 8,
+    alignItems: 'center',
   },
-  blockUserModal: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    backgroundColor: "#1c1c1e",
-    padding: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    alignItems: "center",
+  activeTab: {
+    borderRadius: 6,
+    backgroundColor: '#303437',
   },
-  blockUserModalHeader: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
+  tabText: {
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  aboutContainer: {
+    marginVertical: 10,
+  },
+  sectionLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#fff',
+  },
+  aboutBox: {
+    backgroundColor: '#303437', // Light gray background
+    padding: 12,
+    borderRadius: 13, // Rounded corners
+  },
+  aboutText: {
+    fontSize: 14,
+    color: '#fff',
+    textAlign: 'justify',
+    lineHeight: 30,
+  },
+
+  tagsSection: {
+    marginTop: 10,
+  },
+  tagWrapper: {
     marginBottom: 10,
   },
-  blockUserModalText: {
+  tagRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    paddingBottom: 4,
+  },
+  tagLabel: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  tagValue: {
     fontSize: 16,
-    color: "white",
-    textAlign: "center",
+    fontWeight: '400',
+    color: '#fff',
+  },
+
+  editProfileContainer: {
+    flex: 1,
+    backgroundColor: '#000',
+    // backgroundColor: '#fff',
+    padding: 20,
+  },
+
+  editHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 30,
     marginBottom: 20,
   },
-  purpleText: {
-    color: "purple",
-    fontWeight: "bold",
-  },
-  blockUserModalButton: {
-    backgroundColor: "red",
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    borderRadius: 10,
-  },
-  blockUserModalButtonText: {
-    color: "white",
-    fontSize: 16,
-    },
-  
-  blockUserModalButtonRow: {
-    marginTop: 20,
-  },
-  blockUserModalButton: {
-    backgroundColor: '#B976FF',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  blockUserModalButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  blockUserModalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
-  },
-  blockUserModalContainer: {
-    backgroundColor: '#202325',
-    padding: 10,
-    alignItems: 'center',
-    paddingBottom: 40,
-  },
-  blockUserModalHeader: {
+
+  headerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 10,
+    fontWeight: '700',
+    color: '#fff',
   },
-  blockUserModalText: {
+
+  backArrow: {
+    width: 24,
+    height: 24,
+  },
+
+  inputContainer: {
+    marginBottom: 15,
+  },
+
+  label: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 5,
+    color: '#fff',
+    paddingLeft: 5,
+  },
+
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#303437',
+    padding: 10,
+    borderRadius: 8,
+    color: '#fff',
     fontSize: 16,
-    color: '#ccc',
-    textAlign: 'center',
-      marginBottom: 20,
-    paddingHorizontal:20
+    fontWeight: '400',
   },
-  blockUserModalContinueButton: {
+
+  photosSection: {
+    flexDirection: 'column',
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
+    marginBottom: 20,
+  },
+
+  editPhotosButton: {
     backgroundColor: '#B976FF',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 48,
+    alignItems: 'center', // Centers text horizontally
+    justifyContent: 'center', // Centers text vertically
+    flexDirection: 'row', // Ensures alignment
     width: '100%',
+    height: 48,
   },
-  blockUserModalContinueButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    },
-  blockUserModalHighlight: {
-  color: '#B976FF', // Purple color
-  fontWeight: 'bold',
-    },
-  flagModalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+
+  editPhotosText: {
+    color: '#fff',
+    fontWeight: '600',
+    textAlign: 'center',
   },
-  flagModalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Overlay color
-  },
-  flagModalContent: {
-    width: '100%',
+
+  aboutInput: {
+    borderWidth: 1,
     backgroundColor: '#202325',
-    // padding: 20,
-  },
-  flagModalButtonRow: {
-    flexDirection: 'row',
-    //   marginBottom: 1,
-      width: '100%',
-    height:50
-  },
-  flagModalButton: {
-    backgroundColor: '#1C1C1E',
     padding: 10,
-    // borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5,
-      alignItems: 'center',
-      borderBottomLeftRadius:10,
-      borderBottomRightRadius:10
+    borderRadius: 8,
+    minHeight: 100,
+    color: '#fff',
   },
-  flagModalButtonText: {
-    color: '#E71E1E',
-    fontSize: 17,
+
+  tagInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 6,
+    borderRadius: 8,
+    marginTop: 5,
+    color: '#fff',
   },
-  flagModalCloseButton: {
-    marginTop: 20,
-    backgroundColor: '#FF6347',
-    padding: 10,
-    borderRadius: 5,
+  saveButton: {
+    backgroundColor: '#B976FF',
+    padding: 12,
     alignItems: 'center',
+    borderRadius: 8,
+    marginTop: 20,
+    marginBottom: 40,
+    borderRadius: 48,
   },
-  flagModalCloseButtonText: {
-    color: 'white',
-      fontSize: 17,
-    fontWeight:'900'
-    },
-  userTagContainer: {
-    flexDirection: "row", // Places tags in a row
-    gap: 5, // Space between tags
-    alignItems: "center",
-      alignSelf: "flex-start", // Centers the tags
-    marginTop: 5
+  saveButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
-  userTag: {
-    backgroundColor: "#303437",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 15,
+
+  editPhotosContainer: {
+    flex: 1,
+    backgroundColor: '#121212',
+    padding: 16,
+    height: '100%',
   },
-  tagText: {
-    fontSize: 14,
-    color: "#fff",
+  photoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  photoContainer: {
+    width: '48%',
+    marginBottom: 15,
+    position: 'relative',
+  },
+  photo: {
+    width: '100%',
+    height: 150,
+    borderRadius: 10,
+  },
+  editVaultButton: {
+    position: 'absolute',
+    bottom: 40,
+    left: '10%',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    padding: 8,
+    borderRadius: 5,
+  },
+  savePhotoButton: {
+    position: 'absolute',
+    bottom: 10,
+    left: '10%',
+    backgroundColor: '#ff7f50',
+    padding: 8,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

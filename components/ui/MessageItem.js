@@ -1,37 +1,52 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import VerifiedBadge from '../../components/VerifiedBadge';
+import OnlineStatus from '../../components/OnlineStatus';
 
-const MessageItem = ({ 
-  profilePicture, 
-  senderName, 
-  messageText, 
-  date, 
-  unreadCount, 
-  onlineStatus, 
-  verified, 
-  onPress 
+const MessageItem = ({
+  profilePicture,
+  senderName,
+  messageText,
+  date,
+  unreadCount,
+  onlineStatus,
+  verified,
+  onPress,
 }) => {
   return (
     <TouchableOpacity style={styles.myMessage} onPress={onPress}>
       <Image source={profilePicture} style={styles.mymessagesProfilePicture} />
       <View style={styles.mymessagesContent}>
         <View style={styles.mymessagesNameRow}>
-          <View 
-            style={onlineStatus ? styles.mymessagesOnlineBadge : styles.mymessagesOnlineBadgeOffline} 
-          />
-          <Text style={onlineStatus ? styles.mymessagesSenderName : styles.mymessagesSenderNameOffline}>
+          {/* Online Status Indicator */}
+          <OnlineStatus isOnline={onlineStatus} />
+
+          {/* Sender Name */}
+          <Text
+            style={
+              onlineStatus
+                ? styles.mymessagesSenderName
+                : styles.mymessagesSenderNameOffline
+            }
+          >
             {senderName}
           </Text>
-          {verified && (
-            <View style={styles.mymessagesVerifiedBadge}>
-              <Text style={styles.mymessagesVerifiedTick}>✔</Text>
-            </View>
-          )}
+
+          {/* Verified Badge */}
+          {verified && <VerifiedBadge />}
         </View>
-        <Text style={onlineStatus ? styles.mymessagesText : styles.mymessagesTextOffline}>
+
+        {/* Message Text */}
+        <Text
+          style={
+            onlineStatus ? styles.mymessagesText : styles.mymessagesTextOffline
+          }
+        >
           {messageText}
         </Text>
       </View>
+
+      {/* Message Badge (Unread Count, Date) */}
       <View style={styles.mymessagesBadgeContainer}>
         <Text style={styles.mymessagesDate}>{date}</Text>
         {unreadCount > 0 && (
@@ -45,27 +60,24 @@ const MessageItem = ({
 };
 
 const styles = StyleSheet.create({
-
- 
   myMessagesText: {
-  fontSize: 12,
-  fontWeight: '700',
-  color: '#fff', 
-  paddingLeft: 10
-},
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#fff',
+    paddingLeft: 10,
+  },
 
-  
   profilePicture: {
     width: 40,
     height: 40,
     borderRadius: 5,
     marginRight: 10,
   },
- 
+
   messageContent: {
     flex: 1,
   },
-    myMessagesContainer: {
+  myMessagesContainer: {
     padding: 10,
     // backgroundColor: '#fff',
   },
@@ -79,7 +91,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // padding: 10
-    marginBottom: 15
+    marginBottom: 15,
   },
   mymessagesProfilePicture: {
     width: 47,
@@ -94,8 +106,9 @@ const styles = StyleSheet.create({
   mymessagesNameRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 5,
   },
-  
+
   mymessagesOnlineBadge: {
     width: 10,
     height: 10,
@@ -116,7 +129,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginRight: 7, // Space before the verified badge
   },
-   mymessagesSenderNameOffline: {
+  mymessagesSenderNameOffline: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#6C7072',
@@ -130,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
+
   mymessagesVerifiedTick: {
     color: '#fff',
     fontSize: 12,
@@ -142,7 +155,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontWeight: 'bold',
   },
-   mymessagesTextOffline: {
+  mymessagesTextOffline: {
     fontSize: 14,
     color: '#6C7072',
     marginTop: 2,

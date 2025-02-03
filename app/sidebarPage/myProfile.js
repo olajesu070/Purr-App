@@ -299,8 +299,7 @@ const styles = StyleSheet.create({
   profileBackground: {
     position: 'absolute',
     width: '100%',
-    height: '80%', // Covers 70% of the screen
-    // marginTop: 5,
+    height: '80%',
     top: 0,
   },
   lineContainer: {

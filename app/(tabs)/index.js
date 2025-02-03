@@ -30,31 +30,37 @@ import MyprofileImage from '../../assets/images/myprofileImage.png';
 import SettingsImage from '../../assets/images/settingsImage.png';
 import { useRouter } from 'expo-router';
 
+import OnlineStatus from '../../components/OnlineStatus';
+import VerifiedBadge from '../../components/VerifiedBadge';
+
 // Simulate a function to generate random user data
-const generateRandomUserData = (id, imageArray) => {
+const generateRandomUsers = (count, images) => {
   const names = [
     'John Doe',
     'Jane Smith',
-    'Olajesu Benjamin',
-    'Mary Ann',
-    'Peter King',
-    'Grace Johnson',
+    'Alice Johnson',
+    'Bob Brown',
+    'Charlie White',
   ];
-  const randomName = names[Math.floor(Math.random() * names.length)];
-  const randomImage = imageArray[Math.floor(Math.random() * imageArray.length)];
-  const randomCreatedAt = new Date(
-    new Date() - Math.floor(Math.random() * 72 * 24 * 60 * 60 * 1000) // Random date within the last 72 hours
-  ).toISOString();
-
-  return {
-    id,
-    name: randomName,
-    image: randomImage,
-    createdAt: randomCreatedAt,
-  };
+  return Array.from({ length: count }, (_, index) => {
+    const createdAt = new Date(
+      Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
+    ); // Created within last 7 days
+    return {
+      id: index,
+      name: names[Math.floor(Math.random() * names.length)],
+      image: images[Math.floor(Math.random() * images.length)],
+      createdAt,
+      isOnline: Math.random() > 0.5,
+      isVerified: Math.random() > 0.7,
+      isNewUser: new Date() - createdAt <= 72 * 60 * 60 * 1000,
+      unreadMessages:
+        Math.random() > 0.5 ? Math.floor(Math.random() * 10) + 1 : 0,
+    };
+  });
 };
 
-export default function HomeScreen() {
+export default function HomeScreen({ isPurrPlusUser }) {
   const defaultImages = [
     require('../../assets/images/user4.png'), // Replace with actual image paths
     require('../../assets/images/user3.png'),
@@ -71,37 +77,55 @@ export default function HomeScreen() {
   const [rightSidebarVisible, setRightSidebarVisible] = useState(false);
   const leftSidebarAnimation = useState(new Animated.Value(0))[0];
   const rightSidebarAnimation = useState(new Animated.Value(0))[0];
-
-  const [unlockedProfiles, setUnlockedProfiles] = useState(20);
   const [isAdWatched, setIsAdWatched] = useState(false);
   const [watchingAdText, setWatchingAdText] = useState(''); // Text to show during ad watching
   const [lastRefreshTime, setLastRefreshTime] = useState(Date.now());
   const [isAdInProgress, setIsAdInProgress] = useState(false);
+  const [purredMeList, setPurredMeList] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [unlockedProfiles, setUnlockedProfiles] = useState(20);
+  const [unlockedPurrMeProfiles, setUnlockedPurrMeProfiles] = useState(2);
+  const [watchingAd, setWatchingAd] = useState(false);
 
-  // Generate user data with random images from the defaultImages array
-  const users = Array.from({ length: 100 }, (_, index) =>
-    generateRandomUserData(index + 1, defaultImages)
-  );
-
-  const handleAdButtonClick = () => {
-    console.log('Button clicked');
-    console.log('Current state:', {
-      unlockedProfiles,
-      isAdInProgress,
-      watchingAdText,
-    });
-
-    // Proceed with logic if no issues with state
+  const handleUnlockMore = () => {
+    if (progress >= 1) {
+      setAdModalVisible(false); // Close the modal
+      setUnlockedPurrMeProfiles((prev) => prev + 10); // Unlock 10 more profiles
+    }
+  };
+  // Filter out items older than 168 hours (7 days)
+  const filterExpiredItems = (items) => {
+    const now = Date.now();
+    return items.filter(
+      (item) => now - new Date(item.createdAt).getTime() <= 168 * 60 * 60 * 1000
+    ); // 168 hours in ms
   };
 
-  // Check if 5 minutes have passed since last refresh
-  const canRefresh = Date.now() - lastRefreshTime >= 5 * 60 * 1000;
+  useEffect(() => {
+    // Sort by most recent first
+    const sortedPurreds = [...users].sort(
+      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    );
+    setPurredMeList(filterExpiredItems(sortedPurreds));
+  }, [users]);
 
-  // Layout for the grid (two items per row)
-  const gridLayout = {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+  // const handleUnlockMore = () => {
+  //   if (progress >= 1) {
+  //     setUnlockedProfiles((prev) => prev + 8); // Unlock 8 more profiles after watching the ad
+  //     setAdModalVisible(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    setUsers(generateRandomUsers(100, images));
+  }, []);
+
+  const unlockMoreProfiles = () => {
+    setWatchingAd(true);
+    setTimeout(() => {
+      setUnlockedProfiles((prev) => Math.min(prev + 20, 100));
+      setWatchingAd(false);
+    }, 2000); // Simulating ad watch time
   };
 
   const router = useRouter();
@@ -179,10 +203,11 @@ export default function HomeScreen() {
   };
 
   const images = [
-    require('../../assets/images/user1.png'),
-    require('../../assets/images/user2.png'),
     require('../../assets/images/user3.png'),
     require('../../assets/images/user4.png'),
+    require('../../assets/images/user5.png'),
+    require('../../assets/images/user6.png'),
+    require('../../assets/images/user7.png'),
   ];
 
   const data = Array.from({ length: 12 }, (_, i) => ({
@@ -712,122 +737,65 @@ export default function HomeScreen() {
       {/* Content Display */}
       <View style={styles.contentContainer}>
         {activeTab === 'Feed' && (
-          <ScrollView contentContainerStyle={gridLayout}>
+          <ScrollView contentContainerStyle={styles.gridLayout}>
             {users.slice(0, unlockedProfiles).map((user, index) => (
               <View
                 key={user.id}
                 style={[
-                  styles.box,
-                  index % 2 === 0 ? { marginRight: 10 } : null,
-                ]} // Two items per row
-              >
-                <ImageBackground
-                  source={user.image}
-                  style={styles.imageBackground}
-                  imageStyle={styles.imageBackgroundStyle}
-                >
-                  {/* New Badge Visible only for users within 72 hours */}
-                  {new Date() - new Date(user.createdAt) <=
-                    72 * 60 * 60 * 1000 && (
-                    <View style={styles.badgeTopLeft}>
-                      <Text style={styles.badgeText}>New</Text>
-                    </View>
-                  )}
-
-                  {/* Bottom Text and Dot */}
-                  <View style={styles.bottomContainer}>
-                    <View
-                      style={[styles.bottomDot, { backgroundColor: 'green' }]}
-                    />
-                    <Text style={styles.bottomText}>{user.name}</Text>
-                    <View style={styles.blueTick} />
-                  </View>
-                </ImageBackground>
-              </View>
-            ))}
-
-            {unlockedProfiles < 100 && (
-              <View style={styles.adButtonContainer}>
-                <TouchableOpacity
-                  onPress={() => {
-                    alert('Button clicked!'); // Simple alert to test button press
-                    console.log('Button clicked'); // Log for debug
-                  }}
-                  style={styles.adButton}
-                  disabled={isAdWatched || !canRefresh}
-                >
-                  <Text style={styles.adButtonText}>
-                    {watchingAdText || 'Watch Ad to Unlock More'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-            {unlockedProfiles < 100 && (
-              <View style={styles.unlockContainer}>
-                <Text style={styles.unlockText}>
-                  Unlock more profiles by watching ads.
-                </Text>
-              </View>
-            )}
-          </ScrollView>
-        )}
-        {activeTab === 'Purred Me' && (
-          <ScrollView contentContainerStyle={styles.grid}>
-            {data.map((item, index) => (
-              <View
-                key={item.id}
-                style={[
-                  styles.box,
-                  // Apply blur only if the ad is not completed and for boxes after the first two
-                  !adCompleted && index > 1 && styles.blurredBox,
+                  styles.userProfileBox,
+                  index % 2 === 0 ? { marginRight: 15 } : null,
                 ]}
               >
-                <ImageBackground
-                  source={item.image}
-                  style={styles.imageBackground}
-                  imageStyle={styles.imageBackgroundStyle}
+                <TouchableOpacity
+                  onPress={() => router.push('/sidebarPage/chatUserProfile')}
                 >
-                  <View style={styles.badgeTopLeft}>
-                    <Text style={styles.badgeText}>New</Text>
-                  </View>
-
-                  <View style={styles.badgeTopRight}>
-                    <Text style={styles.counterText}>{item.id}</Text>
-                  </View>
-
-                  <View style={styles.bottomContainer}>
-                    <View style={styles.bottomDot} />
-                    <Text style={styles.bottomText}>Olajesu Benjamin</Text>
-                    <View style={styles.blueTick} />
-                  </View>
-                </ImageBackground>
+                  <ImageBackground
+                    source={user.image}
+                    style={styles.imageBackground}
+                    imageStyle={[
+                      styles.imageStyle,
+                      user.isOnline && styles.onlineBorder,
+                    ]}
+                    onPress={() => router.push('/sidebarPage/chatUserProfile')}
+                  >
+                    {user.isNewUser && (
+                      <View style={styles.badgeNew}>
+                        <Text style={styles.userProfilebadgeText}>New</Text>
+                      </View>
+                    )}
+                    {user.isOnline && user.unreadMessages > 0 && (
+                      <View style={styles.unreadBadge}>
+                        <Text style={styles.userProfileBadgeText}>
+                          {user.unreadMessages}
+                        </Text>
+                      </View>
+                    )}
+                    <View style={styles.userProfilebottomContainer}>
+                      <OnlineStatus isOnline={user.isOnline} />
+                      <Text style={styles.userProfilebottomText}>
+                        {user.name}
+                      </Text>
+                      <VerifiedBadge />
+                    </View>
+                  </ImageBackground>
+                </TouchableOpacity>
               </View>
             ))}
-
-            {/* First Modal */}
-            <Modal
-              visible={modalVisible}
-              animationType="slide"
-              transparent={true}
-              onRequestClose={() => setModalVisible(false)}
-            >
-              <View style={styles.modalOverlay}>
-                <View style={styles.modalContent}>
-                  <View style={styles.modalContainer}>
-                    <Text style={styles.advertModalTitle}>
-                      WATCH A SHORT AD TO VIEW PURRED ME
-                    </Text>
-                    <TouchableOpacity
-                      style={styles.modalButton}
-                      onPress={openAdModal}
-                    >
-                      <Text style={styles.buttonText}>Watch Ad</Text>
-                    </TouchableOpacity>
-                  </View>
+            {unlockedProfiles < 100 && (
+              <View style={styles.modalContents}>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.advertModalTitle}>
+                    WATCH A SHORT AD TO VIEW PURRED ME
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.modalButton}
+                    onPress={openAdModal}
+                  >
+                    <Text style={styles.buttonText}>Watch Ad</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
-            </Modal>
+            )}
 
             {/* Second Modal */}
             <Modal
@@ -844,10 +812,11 @@ export default function HomeScreen() {
                     if (progress < 1) {
                       Alert.alert(
                         'Notice',
-                        'You cannot close until the ads finishes.'
+                        'You cannot close until the ad finishes.'
                       );
                     } else {
-                      setAdModalVisible(false); // Close the modal only if progress is complete
+                      setAdModalVisible(false); // Close the modal
+                      setUnlockedProfiles((prev) => prev + 20); // Unlock 20 more profiles
                     }
                   }}
                 >
@@ -878,8 +847,146 @@ export default function HomeScreen() {
                     onPress={() => {
                       setAdModalVisible(false); // Close the ad modal
                       setAdCompleted(true); // Mark the ad as completed
+                      setUnlockedProfiles((prev) => prev + 20);
                     }}
                   />
+                )}
+              </View>
+            </Modal>
+          </ScrollView>
+        )}
+        {activeTab === 'Purred Me' && (
+          <ScrollView contentContainerStyle={styles.gridLayout}>
+            {/* Display first two profiles normally */}
+            {users.slice(0, 2).map((user, index) => (
+              <View
+                key={user.id}
+                style={[
+                  styles.userProfileBox,
+                  index % 2 === 0 ? { marginRight: 15 } : null,
+                ]}
+              >
+                <ImageBackground
+                  source={user.image}
+                  style={styles.imageBackground}
+                  imageStyle={[
+                    styles.imageStyle,
+                    user.isOnline && styles.onlineBorder,
+                  ]}
+                >
+                  {user.isNewUser && (
+                    <View style={styles.badgeNew}>
+                      <Text style={styles.userProfilebadgeText}>New</Text>
+                    </View>
+                  )}
+                  {user.isOnline && user.unreadMessages > 0 && (
+                    <View style={styles.unreadBadge}>
+                      <Text style={styles.userProfileBadgeText}>
+                        {user.unreadMessages}
+                      </Text>
+                    </View>
+                  )}
+                  <View style={styles.userProfilebottomContainer}>
+                    <Text style={styles.userProfilebottomText}>
+                      {user.name}
+                    </Text>
+                  </View>
+                </ImageBackground>
+              </View>
+            ))}
+
+            {/* Display remaining profiles as blurred */}
+            {users.slice(2).map((user, index) => (
+              <View
+                key={user.id}
+                style={[
+                  styles.userProfileBox,
+                  index % 2 === 0 ? { marginRight: 15 } : null,
+                  styles.blurredProfile, // Apply blurred effect to profiles after the first 2
+                ]}
+              >
+                <ImageBackground
+                  source={user.image}
+                  style={styles.imageBackground}
+                  imageStyle={[
+                    styles.imageStyle,
+                    user.isOnline && styles.onlineBorder,
+                  ]}
+                >
+                  <Text style={styles.blurredText}>Unlock by Watching Ad</Text>
+                </ImageBackground>
+              </View>
+            ))}
+
+            {/* Fixed Modal at the bottom */}
+            {unlockedPurrMeProfiles < 3 && (
+              <View style={styles.fixedModalContent}>
+                <View style={styles.modalContainer}>
+                  <Text style={styles.advertModalTitle}>
+                    WATCH A SHORT AD TO VIEW MORE
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.modalButton}
+                    onPress={openAdModal}
+                  >
+                    <Text style={styles.buttonText}>Watch Ad</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+
+            {/* Modal for Watching Ads */}
+            <Modal
+              visible={adModalVisible}
+              animationType="fade"
+              transparent={false}
+              onRequestClose={() => setAdModalVisible(false)}
+            >
+              <View style={styles.adContainer}>
+                {/* Close Button */}
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => {
+                    if (progress < 1) {
+                      Alert.alert(
+                        'Notice',
+                        'You cannot close until the ad finishes.'
+                      );
+                    } else {
+                      setAdModalVisible(false); // Close the modal
+                      handleUnlockMore(); // Unlock more profiles
+                    }
+                  }}
+                >
+                  <Text style={styles.closeButtonText}>X</Text>
+                </TouchableOpacity>
+
+                {/* Progress Bar */}
+                <Progress.Bar
+                  progress={progress}
+                  width={300}
+                  height={3}
+                  color="#B976FF"
+                  unfilledColor="#e0e0e0"
+                  borderWidth={0}
+                  style={styles.progressBar}
+                />
+
+                {/* Ad Content */}
+                <View style={styles.adRectangle}>
+                  <Text style={styles.adText}>Ads Here</Text>
+                </View>
+
+                {/* Action Button when ad is finished */}
+                {progress >= 1 && (
+                  <TouchableOpacity
+                    style={styles.callToActionButton}
+                    onPress={handleUnlockMore}
+                  >
+                    <Text style={styles.callToActionText}>
+                      Unlock More Profiles
+                    </Text>
+                  </TouchableOpacity>
                 )}
               </View>
             </Modal>
@@ -961,7 +1068,7 @@ export default function HomeScreen() {
                         'You cannot close until the ads finishes.'
                       );
                     } else {
-                      setAdModalVisible(false); // Close the modal only if progress is complete
+                      setAdModalVisible(false);
                     }
                   }}
                 >
@@ -1005,6 +1112,115 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  fixedModalContent: {
+    position: 'absolute', // Fix it to the bottom
+    bottom: 0, // Stick to the bottom of the screen
+    left: 0, // Align it to the left edge
+    right: 0, // Ensure it's full width
+    backgroundColor: '#fff',
+    padding: 15,
+    zIndex: 1000, // Make sure it's on top of other content
+    alignItems: 'center', // Center the content horizontally
+    justifyContent: 'center', // Vertically center the content
+  },
+  modalContainer: {
+    alignItems: 'center',
+  },
+  advertModalTitle: {
+    fontSize: 18,
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  modalButton: {
+    padding: 10,
+    backgroundColor: '#B976FF',
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+
+  blurredProfile: {
+    filter: 'blur(5px)', // This applies the blur effect
+  },
+  blurredText: {
+    color: 'gray',
+    fontSize: 16,
+  },
+  gridLayout: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    padding: 10,
+    paddingHorizontal: 20,
+  },
+  // box: { width: '48%', marginBottom: 10 },
+  userProfileBox: {
+    width: '45%',
+    marginVertical: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  imageBackground: { width: '100%', height: 150, justifyContent: 'flex-end' },
+  imageStyle: { borderRadius: 10 },
+  onlineBorder: { borderColor: '#B976FF', borderWidth: 3 },
+  badgeNew: {
+    position: 'absolute',
+    top: 5,
+    left: 5,
+    backgroundColor: '#FA8F21',
+    // padding: 8,
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    borderRadius: 32,
+    marginLeft: 5,
+    marginTop: 5,
+  },
+  userProfilebadgeText: {
+    fontSize: 10,
+    fontWeight: 600,
+    color: '#FFFFFF',
+  },
+
+  unreadBadge: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#B976FF',
+    // padding: 2,
+    borderRadius: 100,
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    marginTop: 4,
+    alignItems: 'center',
+    marginRight: 5,
+  },
+  userProfileBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // padding: 2,
+  },
+  userProfilebottomContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
+    gap: 5,
+    paddingHorizontal: 10,
+    // backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  bottomDot: { width: 10, height: 10, borderRadius: 5, marginRight: 5 },
+  userProfilebottomText: { color: 'white', fontWeight: '700', fontSize: 12 },
+  adButtonContainer: { alignItems: 'center', marginVertical: 10 },
+  adButton: { backgroundColor: '#ffcc00', padding: 10, borderRadius: 5 },
+
+  // new one starts here
+
   container: {
     flex: 1,
     marginTop: 40,
@@ -1218,6 +1434,17 @@ const styles = StyleSheet.create({
     borderTopWidth: 5,
   },
 
+  modalContent: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    padding: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    zIndex: 1000,
+  },
   modalContainer: {
     backgroundColor: '#202325',
     padding: 0,
@@ -1544,13 +1771,7 @@ const styles = StyleSheet.create({
   },
 
   // other stles starts
-  box: {
-    width: '48%',
-    marginVertical: 10,
-    borderRadius: 10,
-    overflow: 'hidden',
-    position: 'relative',
-  },
+
   imageBackground: {
     height: 200,
     justifyContent: 'flex-end',

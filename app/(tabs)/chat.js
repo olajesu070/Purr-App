@@ -1,19 +1,24 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity,} from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import { ThemedView } from '@/components/ThemedView';
 import SponsoredAdsCard from '../../components/tabsComponents/SponsoredAdsCard';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import MessageItem from '@/components/ui/MessageItem';
+import VerifiedBadge from '../../components/VerifiedBadge';
 
 const ChatPage = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const router = useRouter();
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
-
- 
-
 
   return (
     <View style={styles.container}>
@@ -23,114 +28,121 @@ const ChatPage = () => {
       </View>
       <ScrollView style={styles.messageContainer}>
         <View style={styles.sponsoredMessageContainer}>
-           {/* Sponsored Message container*/}
+          {/* Sponsored Message container*/}
           <Text style={styles.sponsoredText}>Sponsored Messages</Text>
           {/* Sponsored Message content */}
           <TouchableOpacity onPress={openModal}>
-          <View style={styles.sponsoredMessage}>
-            
-              <Image source={require('../../assets/images/adsImage1.png')} style={styles.profilePicture} />
-              <View style={styles.messageContent}>
-                <View style={styles.adNameRow}>
-                  {/* Verified Icon */}
-                
-                  {/* Ad Name */}
-                      <Text style={styles.adName}>Dorothy’s Bar</Text>
-                      {/* <Image source={require('../../assets/images/verifiedTick.png')} style={styles.verifiedTick} /> */}
-                      <View style={styles.verifiedIcon}>
-                        <Text style={styles.verifiedTickIcon}>✔</Text>
-                      </View>
-                </View>
-                {/* Short Message */}
-                <Text style={styles.shortMessage}>Purr Partner | Local LGBTQIA+ Bar</Text>
-              </View>
-              {/* Yellow Badge */}
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>NEW</Text>
-              </View>
-            
-            
-            </View>
-          </TouchableOpacity>
-          
-          {/* Sponsored Message content */}
             <View style={styles.sponsoredMessage}>
-              <Image source={require('../../assets/images/purrAdsImage.png')} style={styles.purrAdsImage} />
+              <Image
+                source={require('../../assets/images/adsImage1.png')}
+                style={styles.profilePicture}
+              />
               <View style={styles.messageContent}>
                 <View style={styles.adNameRow}>
                   {/* Verified Icon */}
-                
+
                   {/* Ad Name */}
-                      <Text style={styles.adName}>Purr Administrators</Text>
-                      {/* <Image source={require('../../assets/images/verifiedTick.png')} style={styles.verifiedTick} /> */}
-                      <View style={styles.verifiedIcon}>
-                        <Text style={styles.verifiedTickIcon}>✔</Text>
-                      </View>
+                  <Text style={styles.adName}>Dorothy’s Bar</Text>
+                  {/* <Image source={require('../../assets/images/verifiedTick.png')} style={styles.verifiedTick} /> */}
+                  <VerifiedBadge />
                 </View>
                 {/* Short Message */}
                 <Text style={styles.shortMessage}>
-                  7-DAY <Text style={styles.purpleText}>PURR+</Text> ACCESS ONLY <Text style={styles.orangeText}>$6.99</Text>
+                  Purr Partner | Local LGBTQIA+ Bar
                 </Text>
-
-              </View>
-              {/* Yellow Badge */}
-              <View style={styles.purrBadge}>
-                <Text style={styles.badgeText}>NEW</Text>
-              </View>
-          </View>
-          
-          {/* Sponsored Message content */}
-            <View style={styles.sponsoredMessage}>
-              <Image source={require('../../assets/images/blankAdsImage.png')} style={styles.profilePicture} />
-              <View style={styles.messageContent}>
-                <View style={styles.adNameRow}>
-                  {/* Verified Icon */}
-                
-                  {/* Ad Name */}
-                      <Text style={styles.adName}>Ad Name</Text>
-                      {/* <Image source={require('../../assets/images/verifiedTick.png')} style={styles.verifiedTick} /> */}
-                      {/* <View style={styles.verifiedIcon}>
-                        <Text style={styles.verifiedTickIcon}>✔</Text>
-                      </View> */}
-                </View>
-                {/* Short Message */}
-                <Text style={styles.shortMessage}>Short message.</Text>
-              </View>
-              {/* Yellow Badge */}
-              <View style={styles.badge}>
-                <Text style={styles.badgeText}>NEW</Text>
-              </View>
-          </View>
-          
-           {/* Sponsored Message content */}
-            <View style={styles.sponsoredMessage}>
-              <Image source={require('../../assets/images/blankAdsImage.png')} style={styles.profilePicture} />
-              <View style={styles.messageContent}>
-                <View style={styles.adNameRow}>
-                  {/* Verified Icon */}
-                
-                  {/* Ad Name */}
-                      <Text style={styles.adName}>Ad Name</Text>
-                      {/* <Image source={require('../../assets/images/verifiedTick.png')} style={styles.verifiedTick} /> */}
-                      {/* <View style={styles.verifiedIcon}>
-                        <Text style={styles.verifiedTickIcon}>✔</Text>
-                      </View> */}
-                </View>
-                {/* Short Message */}
-                <Text style={styles.shortMessage}>Short message.</Text>
               </View>
               {/* Yellow Badge */}
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>NEW</Text>
               </View>
             </View>
-        </View>
-       
+          </TouchableOpacity>
 
-         {/* My Message */}
+          {/* Sponsored Message content */}
+          <View style={styles.sponsoredMessage}>
+            <Image
+              source={require('../../assets/images/purrAdsImage.png')}
+              style={styles.purrAdsImage}
+            />
+            <View style={styles.messageContent}>
+              <View style={styles.adNameRow}>
+                {/* Verified Icon */}
+
+                {/* Ad Name */}
+                <Text style={styles.adName}>Purr Administrators</Text>
+                {/* <Image source={require('../../assets/images/verifiedTick.png')} style={styles.verifiedTick} /> */}
+
+                <VerifiedBadge />
+              </View>
+              {/* Short Message */}
+              <Text style={styles.shortMessage}>
+                7-DAY <Text style={styles.purpleText}>PURR+</Text> ACCESS ONLY{' '}
+                <Text style={styles.orangeText}>$6.99</Text>
+              </Text>
+            </View>
+            {/* Yellow Badge */}
+            <View style={styles.purrBadge}>
+              <Text style={styles.badgeText}>NEW</Text>
+            </View>
+          </View>
+
+          {/* Sponsored Message content */}
+          <View style={styles.sponsoredMessage}>
+            <Image
+              source={require('../../assets/images/blankAdsImage.png')}
+              style={styles.profilePicture}
+            />
+            <View style={styles.messageContent}>
+              <View style={styles.adNameRow}>
+                {/* Verified Icon */}
+
+                {/* Ad Name */}
+                <Text style={styles.adName}>Ad Name</Text>
+                {/* <Image source={require('../../assets/images/verifiedTick.png')} style={styles.verifiedTick} /> */}
+                {/* <View style={styles.verifiedIcon}>
+                        <Text style={styles.verifiedTickIcon}>✔</Text>
+                      </View> */}
+              </View>
+              {/* Short Message */}
+              <Text style={styles.shortMessage}>Short message.</Text>
+            </View>
+            {/* Yellow Badge */}
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>NEW</Text>
+            </View>
+          </View>
+
+          {/* Sponsored Message content */}
+          <View style={styles.sponsoredMessage}>
+            <Image
+              source={require('../../assets/images/blankAdsImage.png')}
+              style={styles.profilePicture}
+            />
+            <View style={styles.messageContent}>
+              <View style={styles.adNameRow}>
+                {/* Verified Icon */}
+
+                {/* Ad Name */}
+                <Text style={styles.adName}>Ad Name</Text>
+                {/* <Image source={require('../../assets/images/verifiedTick.png')} style={styles.verifiedTick} /> */}
+                {/* <View style={styles.verifiedIcon}>
+                        <Text style={styles.verifiedTickIcon}>✔</Text>
+                      </View> */}
+              </View>
+              {/* Short Message */}
+              <Text style={styles.shortMessage}>Short message.</Text>
+            </View>
+            {/* Yellow Badge */}
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>NEW</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* My Message */}
         <View style={styles.myMessagesContainer}>
           <Text style={styles.myMessagesHeader}>My Messages</Text>
-         <MessageItem
+          <MessageItem
             profilePicture={require('../../assets/images/user1Dp.png')}
             senderName="Inique"
             messageText="Hey, you coming out tonight??! I wa..."
@@ -180,20 +192,17 @@ const ChatPage = () => {
             verified={false}
             onPress={() => router.push('/chat/detail')}
           />
-</View>
-
-
-
+        </View>
       </ScrollView>
 
-       {/* Modal */}
-                {isModalVisible && (
-              <SponsoredAdsCard
-                    imageSource={require('../../assets/images/adsBanner1.png')}
-                    url="https://www.purrsocial.com/"
-                    onClose={closeModal}
-                  />
-                )}
+      {/* Modal */}
+      {isModalVisible && (
+        <SponsoredAdsCard
+          imageSource={require('../../assets/images/adsBanner1.png')}
+          url="https://www.purrsocial.com/"
+          onClose={closeModal}
+        />
+      )}
     </View>
   );
 };
@@ -217,9 +226,8 @@ const styles = StyleSheet.create({
     fontWeight: '700', // Bold font for emphasis
   },
   sponsoredMessageContainer: {
-    // marginBottom: 10, 
-    marginTop: 5
-    
+    // marginBottom: 10,
+    marginTop: 5,
   },
   messageContainer: {
     // marginVertical: 110,
@@ -230,22 +238,22 @@ const styles = StyleSheet.create({
   myMessagesContainer: {
     // marginVertical: 110,
     display: 'row',
-    marginTop:10
+    marginTop: 10,
   },
   sponsoredText: {
-  fontSize: 12,
-  fontWeight: '700',
-  color: '#fff', 
-  paddingLeft: 10
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#fff',
+    paddingLeft: 10,
   },
   myMessagesText: {
-  fontSize: 12,
-  fontWeight: '700',
-  color: '#fff', 
-  paddingLeft: 10
-},
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#fff',
+    paddingLeft: 10,
+  },
 
-sponsoredMessage: {
+  sponsoredMessage: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
@@ -253,7 +261,7 @@ sponsoredMessage: {
     borderRadius: 8,
     // marginBottom: 10,
   },
-  
+
   profilePicture: {
     width: 40,
     height: 40,
@@ -268,7 +276,7 @@ sponsoredMessage: {
   },
 
   purrAdsImage: {
-     width: 43,
+    width: 43,
     height: 32,
     // borderRadius: 5,
     marginRight: 10,
@@ -281,61 +289,48 @@ sponsoredMessage: {
     alignItems: 'center',
     marginBottom: 4,
   },
-  verifiedIcon: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: '#9b59b6', // Purple color
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 4,
-  },
-  verifiedTickIcon: {
-    color: '#fff',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
+
   adName: {
     fontSize: 14,
     fontWeight: '800',
     color: '#fff',
-    paddingRight: 5
+    paddingRight: 5,
   },
   shortMessage: {
     fontSize: 14,
     color: '#fff',
     fontWeight: '800',
-    fontStyle:'italic'
+    fontStyle: 'italic',
   },
   purpleText: {
-  color: '#B976FF', 
-    fontWeight: '800', 
-  fontSize:14
-},
-orangeText: {
-  color: '#FA8F21', 
-  fontWeight: '800', 
-  fontSize: 14
-},
+    color: '#B976FF',
+    fontWeight: '800',
+    fontSize: 14,
+  },
+  orangeText: {
+    color: '#FA8F21',
+    fontWeight: '800',
+    fontSize: 14,
+  },
 
   badge: {
-    backgroundColor: '#FA8F21', 
+    backgroundColor: '#FA8F21',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 5,
   },
   purrBadge: {
-   backgroundColor: '#B976FF', 
+    backgroundColor: '#B976FF',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 5,
-},
+  },
   badgeText: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
   },
-    myMessagesContainer: {
+  myMessagesContainer: {
     padding: 10,
     // backgroundColor: '#fff',
   },
@@ -349,7 +344,7 @@ orangeText: {
     flexDirection: 'row',
     alignItems: 'center',
     // padding: 10
-    marginBottom: 15
+    marginBottom: 15,
   },
   mymessagesProfilePicture: {
     width: 47,
@@ -365,7 +360,7 @@ orangeText: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  
+
   mymessagesOnlineBadge: {
     width: 10,
     height: 10,
@@ -386,7 +381,7 @@ orangeText: {
     color: '#fff',
     marginRight: 7, // Space before the verified badge
   },
-   mymessagesSenderNameOffline: {
+  mymessagesSenderNameOffline: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#6C7072',
@@ -400,7 +395,7 @@ orangeText: {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
+
   mymessagesVerifiedTick: {
     color: '#fff',
     fontSize: 12,
@@ -412,7 +407,7 @@ orangeText: {
     marginTop: 2,
     fontWeight: 'bold',
   },
-   mymessagesTextOffline: {
+  mymessagesTextOffline: {
     fontSize: 14,
     color: '#6C7072',
     marginTop: 2,

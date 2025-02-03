@@ -26,6 +26,8 @@ import { launchCamera } from 'react-native-image-picker';
 import { Camera } from 'expo-camera';
 import ModalWrapper from 'react-native-modal';
 import { useNavigation } from '@react-navigation/native';
+import VerifiedBadge from '../../components/VerifiedBadge';
+import OnlineStatus from '../../components/OnlineStatus';
 
 const ChatDetailScreen = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -157,7 +159,7 @@ const ChatDetailScreen = () => {
         {/* Profile Section (Centered) */}
         <View style={styles.profileContainer}>
           {/* Online Status Dot */}
-          <View style={styles.onlineDot} />
+          <OnlineStatus isOnline={true} />
 
           {/* Clickable Profile Image */}
           <TouchableOpacity
@@ -174,7 +176,7 @@ const ChatDetailScreen = () => {
           {/* Username & Verified Badge */}
           <View style={styles.usernameContainer}>
             <Text style={styles.username}>John Doe</Text>
-            <Text style={styles.verifiedBadge}>✔</Text>
+            <VerifiedBadge />
           </View>
         </View>
 
@@ -618,6 +620,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 5,
   },
   onlineDot: {
     width: 10,
@@ -635,6 +638,7 @@ const styles = StyleSheet.create({
   usernameContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 5,
   },
   username: {
     color: 'white',
